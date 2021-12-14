@@ -1,0 +1,9 @@
+{
+  "name": "dsa-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Totoro1998/dsa-js.git",
+  "author": "totoro.fu <totoro.fu@webeye.com>",
+  "license": "MIT",
+  "type": "module"
+}

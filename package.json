@@ -5,5 +5,8 @@
   "repository": "https://github.com/Totoro1998/dsa-js.git",
   "author": "totoro.fu <totoro.fu@webeye.com>",
   "license": "MIT",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  }
 }

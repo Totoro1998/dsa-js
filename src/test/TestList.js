@@ -1,2 +1,3 @@
-import ListNode from '../list/ListNode.js';
-const first_list = new ListNode(1);
+import List from '../list/List.js';
+
+const list = new List();

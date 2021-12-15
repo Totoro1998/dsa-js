@@ -1,3 +1,4 @@
+import ListNode from './ListNode.js';
 export default class List {
   #size; //规模
   #header; //头哨兵
@@ -5,11 +6,23 @@ export default class List {
   /**
    * 列表创建时的初始化
    */
-  #init() {}
+  #init() {
+    this.#header = new ListNode();
+    this.#trailer = new ListNode();
+    this.#header.succ = this.#trailer;
+    this.#trailer.pred = this.#header;
+    this.#size = 0;
+  }
   /**
    * 清除所有节点
    */
-  #clear() {}
+  #clear() {
+    const old_size = this.#size;
+    while (0 < this.#size) {
+      this.remove(this.#header.succ);
+    }
+    return old_size;
+  }
   /**
    * 复制列表中自位置p起的n项
    * @param {*} p
@@ -67,11 +80,15 @@ export default class List {
   /**
    * 首节点位置
    */
-  first() {}
+  first() {
+    return this.#header.succ;
+  }
   /**
    * 末节点位置
    */
-  last() {}
+  last() {
+    return this.#trailer.pred;
+  }
   /**
    * 判断位置p是否对外合法
    * @param {*} p
@@ -103,7 +120,10 @@ export default class List {
    * 将e当作首节点插入
    * @param {*} e
    */
-  insertAsFirst(e) {}
+  insertAsFirst(e) {
+    this.#size++;
+    return this.#header.insertAsSucc(e);
+  }
   /**
    * 将e当作末节点插入
    * @param {*} e

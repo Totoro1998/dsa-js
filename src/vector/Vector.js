@@ -72,7 +72,7 @@ export default class Vector {
    * 起泡排序算法
    */
   #bubbleSort(lo = 0, hi = this.#size) {
-    const bubbleSortA = (lo, hi) => {
+    const bubbleSortA = () => {
       while (lo < --hi) {
         for (let i = lo; i < hi; i++) {
           if (this.#elem[i] > this.#elem[i + 1]) {
@@ -81,20 +81,32 @@ export default class Vector {
         }
       }
     };
-    // 提前终止版
-    const bubbleSortB = (lo, hi) => {
+    // 提前终止版，前缀未必是无序的
+    const bubbleSortB = () => {
       let sorted = false;
       while (!sorted) {
         sorted = true;
         for (let i = lo; i < hi - 1; i++) {
           if (this.#elem[i] > this.#elem[i + 1]) {
+            sorted = false;
             [this.#elem[i], this.#elem[i + 1]] = [this.#elem[i + 1], this.#elem[i]];
           }
-          sorted = false;
         }
       }
     };
-    const bubbleSortC = (lo, hi) => {};
+    // 跳跃版本（已经排好序的后缀元素比未排序的前缀元素多）,直接将hi前移
+    const bubbleSortC = () => {
+      for (let last = --hi; lo < hi; hi = last) {
+        last = lo;
+        let i = lo;
+        for (i; i < hi; i++) {
+          if (this.#elem[i] > this.#elem[i + 1]) {
+            last = i; //更新最右侧逆序对位置记录
+            [this.#elem[i], this.#elem[i + 1]] = [this.#elem[i + 1], this.#elem[i]];
+          }
+        }
+      }
+    };
     switch (getRandomNumber(1, 3)) {
       case 1:
         bubbleSortA();
@@ -233,7 +245,10 @@ export default class Vector {
    * @param {*} lo
    * @param {*} hi
    */
-  sort(lo = 0, hi = this.#size) {}
+  sort(lo = 0, hi = this.#size) {
+    this.#bubbleSort(lo, hi);
+    console.log(this.#elem);
+  }
   /**
    * 对[lo, hi)置乱
    * @param {*} lo

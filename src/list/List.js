@@ -128,24 +128,40 @@ export default class List {
    * 将e当作末节点插入
    * @param {*} e
    */
-  insertAsLast(e) {}
+  insertAsLast(e) {
+    this.#size++;
+    return this.#trailer.insertAsPred(e);
+  }
   /**
    * 将e当作p的后继插入
    * @param {*} p
    * @param {*} e
    */
-  insertAsSucc(p, e) {}
+  insertAsSucc(p, e) {
+    this.#size++;
+    return p.insertAsSucc(e);
+  }
   /**
    * 将e当作p的前驱插入
    * @param {*} e
    * @param {*} p
    */
-  insertAsPred(e, p) {}
+  insertAsPred(e, p) {
+    this.#size++;
+    return p.insertAsPred(e);
+  }
   /**
    * 删除合法位置p处的节点,返回被删除节点
    * @param {*} p
    */
-  remove(p) {}
+  remove(p) {
+    const data = p.data;
+    p.pred.succ = p.succ;
+    p.succ.pred = p.pred;
+    delete p;
+    this.#size--;
+    return data;
+  }
   /**
    * 列表区间排序
    * @param {*} p

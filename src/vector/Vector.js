@@ -136,19 +136,60 @@ export default class Vector {
   /**
    * 选择排序算法
    */
-  #selectionSort(lo, hi) {}
+  #selectionSort(lo, hi) {
+    while (lo < --hi) {
+      [this.#elem[this.#maxItem(lo, hi)], this.#elem[hi]] = [this.#elem[hi], this.#elem[this.#maxItem(lo, hi)]];
+    }
+  }
   /**
    * 归并算法
    */
-  #merge(lo, mi, hi) {}
+  #merge(lo, mi, hi) {
+    let i = lo;
+    let A = this.#elem.slice(lo, hi); //合并后的有序向量A[0, hi - lo) = #elem[lo, hi)，就地
+    let j = 0;
+    let lb = mi - lo;
+    let B = new Array(lb); //前子向量B[0, lb) <-- #elem[lo, mi)
+    for (let i = 0; i < lb; i++) {
+      B[i] = A[i];
+    }
+    let k = 0;
+    let lc = hi - mi;
+    let C = this.#elem.slice(mi, hi); //后子向量C[0, lc) = #elem[mi, hi)，就地
+    while (j < lb && k < lc) {
+      //反复地比较B、C的首元素
+      this.#elem[i++] = B[j] <= C[k] ? B[j++] : C[k++]; //将更小者归入A中
+    }
+    while (k < lc) {
+      //若B先耗尽，则
+      this.#elem[i++] = C[k++]; //将C残余的后缀归入A中
+    }
+    while (j < lb) {
+      //若C先耗尽，则
+      this.#elem[i++] = B[j++]; //将B残余的后缀归入A中
+    }
+    A = undefined;
+    B = undefined; //释放临时空间：mergeSort()过程中，如何避免此类反复的new/delete？
+    C = undefined;
+  }
   /**
    * 归并排序算法
    */
-  #mergeSort(lo, hi) {}
+  #mergeSort(lo, hi) {
+    if (hi - lo < 2) {
+      return;
+    }
+    const mi = (lo + hi) >> 1;
+    this.#mergeSort(lo, mi);
+    this.#mergeSort(mi, hi);
+    this.#merge(lo, mi, hi);
+  }
   /**
    * 堆排序
    */
-  #heapSort(lo, hi) {}
+  #heapSort(lo, hi) {
+    this.#bubbleSort(lo, hi);
+  }
   /**
    * 轴点构造算法
    */
@@ -156,11 +197,15 @@ export default class Vector {
   /**
    * 快速排序算法
    */
-  #quickSort(lo, hi) {}
+  #quickSort(lo, hi) {
+    this.#bubbleSort(lo, hi);
+  }
   /**
    * 希尔排序算法
    */
-  #shellSort(lo, hi) {}
+  #shellSort(lo, hi) {
+    this.#bubbleSort(lo, hi);
+  }
   /**
    * 规模
    */
@@ -187,11 +232,9 @@ export default class Vector {
   search(e, lo = 0, hi = this.#size) {
     switch (getRandomNumber(1, 2)) {
       case 1:
-        binSearch(this.#elem, e, lo, hi);
-        break;
+        return fibSearch(this.#elem, e, lo, hi);
       case 2:
-        fibSearch(this.#elem, e, lo, hi);
-        break;
+        return binSearch(this.#elem, e, lo, hi);
     }
   }
   /**
@@ -246,8 +289,26 @@ export default class Vector {
    * @param {*} hi
    */
   sort(lo = 0, hi = this.#size) {
-    this.#bubbleSort(lo, hi);
-    console.log(this.#elem);
+    switch (getRandomNumber(1, 6)) {
+      case 1:
+        this.#bubbleSort(lo, hi);
+        break;
+      case 2:
+        this.#selectionSort(lo, hi);
+        break;
+      case 3:
+        this.#mergeSort(lo, hi);
+        break;
+      case 4:
+        this.#quickSort(lo, hi);
+        break;
+      case 5:
+        this.#heapSort(lo, hi);
+        break;
+      default:
+        this.#shellSort(lo, hi);
+        break;
+    }
   }
   /**
    * 对[lo, hi)置乱
@@ -263,9 +324,88 @@ export default class Vector {
   /**
    * 无序去重
    */
-  deduplicate() {}
+  deduplicate() {
+    /**
+     * 繁琐版
+     */
+    const deduplicateA = () => {
+      let old_size = this.#size;
+      let i = -1;
+      while (++i < this.#size - 1) {
+        let j = i + 1;
+        while (j < this.#size) {
+          if ((this.#elem[i] = this.#elem[j])) {
+            this.removeByIndex(j); //若雷同删除后者
+          } else {
+            j++;
+          }
+        }
+      }
+      return old_size - this.#size;
+    };
+    /**
+     * 高效版本
+     */
+    const deduplicateB = () => {
+      let old_size = this.#size;
+      let i = 1;
+      while (i < this.#size) {
+        if (this.find(this.#elem[i], 0, i) < 0) {
+          i++;
+        } else {
+          this.removeByIndex(i);
+        }
+      }
+      return old_size - this.#size;
+    };
+    switch (getRandomNumber(1, 2)) {
+      case 1:
+        deduplicateA();
+        break;
+      default:
+        deduplicateB();
+        break;
+    }
+  }
   /**
    * 有序去重
    */
-  uniquify() {}
+  uniquify() {
+    /**
+     * 低效版
+     */
+    const uniquifyA = () => {
+      let oldSize = this.#size;
+      let i = 1;
+      while (i < this.#size) {
+        this.#elem[i - 1] === this.#elem[i] ? remove(i) : i++; //若雷同，则删除后者；否则，转至后一元素
+      }
+      return oldSize - this.#size;
+    };
+    /**
+     * 高效版
+     */
+    const uniquifyB = () => {
+      //各对互异“相邻”元素的秩
+      let i = 0;
+      let j = 0;
+      while (++j < this.#size) {
+        //跳过雷同者
+        if (this.#elem[i] !== this.#elem[j]) {
+          this.#elem[++i] = this.#elem[j]; //发现不同元素时，向前移至紧邻于前者右侧
+        }
+      }
+      this.#size = i++;
+      this.#shrink();
+      return j - i;
+    };
+    switch (getRandomNumber(1, 2)) {
+      case 1:
+        uniquifyA();
+        break;
+      default:
+        uniquifyB();
+        break;
+    }
+  }
 }

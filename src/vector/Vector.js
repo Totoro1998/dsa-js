@@ -360,11 +360,9 @@ export default class Vector {
     };
     switch (getRandomNumber(1, 2)) {
       case 1:
-        deduplicateA();
-        break;
+        return deduplicateA();
       default:
-        deduplicateB();
-        break;
+        return deduplicateB();
     }
   }
   /**
@@ -387,8 +385,8 @@ export default class Vector {
      */
     const uniquifyB = () => {
       //各对互异“相邻”元素的秩
-      let i = 0;
-      let j = 0;
+      let i = 0; //用于改变this.#size
+      let j = 0; //用于循环查找和数量
       while (++j < this.#size) {
         //跳过雷同者
         if (this.#elem[i] !== this.#elem[j]) {
@@ -401,11 +399,9 @@ export default class Vector {
     };
     switch (getRandomNumber(1, 2)) {
       case 1:
-        uniquifyA();
-        break;
+        return uniquifyA();
       default:
-        uniquifyB();
-        break;
+        return uniquifyB();
     }
   }
 }

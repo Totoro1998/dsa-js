@@ -1,5 +1,5 @@
-import BinarySearchTree from '../tree/BinarySearchTree.js';
-const tree = new BinarySearchTree()
+import BinarySearchTree from '../src/tree/BinarySearchTree.js';
+const tree = new BinarySearchTree();
 tree.insert(11);
 tree.insert(7);
 tree.insert(15);
@@ -22,6 +22,5 @@ const printNode = (value) => console.log(value);
 // console.log('tree.min----', tree.min())
 // console.log('tree.max----', tree.max())
 // console.log('tree.search(25)----', tree.search(25))
-tree.remove(11)
-tree.postOrderTraverse(printNode)
-
+tree.remove(11);
+tree.postOrderTraverse(printNode);

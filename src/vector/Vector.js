@@ -234,7 +234,7 @@ export default class Vector {
       case 1:
         return fibSearch(this.#elem, e, lo, hi);
       case 2:
-        return binSearch(this.#elem, e, lo, hi);
+        return fibSearch(this.#elem, e, lo, hi);
     }
   }
   /**

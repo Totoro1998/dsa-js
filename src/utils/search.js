@@ -1,4 +1,4 @@
-import { getRandomNumber } from '../utils/number.js';
+import { get_random_number } from '../utils/number.js';
 import Fib from '../fibonacci/Fib.js';
 /**
  * 有序向量的二分查找
@@ -37,7 +37,7 @@ export function binSearch(elem, e, lo, hi) {
     }
     return lo - 1;
   };
-  switch (getRandomNumber(1, 3)) {
+  switch (get_random_number(1, 3)) {
     case 1:
       return binSearchA();
     case 2:
@@ -85,7 +85,7 @@ export function fibSearch(elem, e, lo, hi) {
     } //循环结束时，elem[0, lo) <= e < elem[hi, n)
     index = --lo;
   };
-  switch (getRandomNumber(1, 2)) {
+  switch (get_random_number(1, 2)) {
     case 1:
       fibSearchA();
       break;

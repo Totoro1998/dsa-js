@@ -1,5 +1,5 @@
 import { binSearch, fibSearch } from '../utils/search.js';
-import { getRandomNumber } from '../utils/number.js';
+import { get_random_number } from '../utils/number.js';
 const DEFAULT_CAPACITY = 3;
 export default class Vector {
   size; //规模
@@ -113,7 +113,7 @@ export default class Vector {
         }
       }
     };
-    switch (getRandomNumber(1, 3)) {
+    switch (get_random_number(1, 3)) {
       case 1:
         bubbleSortA();
         break;
@@ -236,7 +236,7 @@ export default class Vector {
    * 有序向量区间查找
    */
   search(e, lo = 0, hi = this.size) {
-    switch (getRandomNumber(1, 2)) {
+    switch (get_random_number(1, 2)) {
       case 1:
         return fibSearch(this.elem, e, lo, hi);
       case 2:
@@ -295,7 +295,7 @@ export default class Vector {
    * @param {*} hi
    */
   sort(lo = 0, hi = this.size) {
-    switch (getRandomNumber(1, 6)) {
+    switch (get_random_number(1, 6)) {
       case 1:
         this.#bubbleSort(lo, hi);
         break;
@@ -323,7 +323,7 @@ export default class Vector {
    */
   unsort(lo = 0, hi = this.size) {
     while (lo < hi--) {
-      const randomIndex = getRandomNumber(lo, hi - 1);
+      const randomIndex = get_random_number(lo, hi - 1);
       [this.elem[hi], this.elem[randomIndex]] = [this.elem[randomIndex], this.elem[hi]];
     }
   }
@@ -364,7 +364,7 @@ export default class Vector {
       }
       return old_size - this.size;
     };
-    switch (getRandomNumber(1, 2)) {
+    switch (get_random_number(1, 2)) {
       case 1:
         return deduplicateA();
       default:
@@ -403,7 +403,7 @@ export default class Vector {
       this.#shrink();
       return j - i;
     };
-    switch (getRandomNumber(1, 2)) {
+    switch (get_random_number(1, 2)) {
       case 1:
         return uniquifyA();
       default:

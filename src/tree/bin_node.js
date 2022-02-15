@@ -1,4 +1,5 @@
-export class BindNode {
+import { trav_in1 } from './bin_node_util.js';
+export class bin_node {
   data = undefined; // 数值
   parent = undefined; // 父节点
   lc = undefined; // 左孩子
@@ -30,41 +31,60 @@ export class BindNode {
    */
   size() {}
   /**
-   * 作为当前节点的左孩子插入新节点
+   * 作为当前节点的左孩子插入
    * @param {*} e
    */
-  insertAsLC(e) {}
+  insert_as_lc(e) {
+    this.lc = new BindNode(e, this);
+    return this.lc;
+  }
   /**
-   * 作为当前节点的右孩子插入新节点
+   * 作为当前节点的右孩子插入
    * @param {*} e
    */
-  insertAsRC(e) {}
+  insert_as_rc(e) {
+    this.rc = new BindNode(e, this);
+    return this.rc;
+  }
   /**
    * 取当前节点的直接后继
    */
   succ() {}
   /**
    * 子树层次遍历
-   * @param {*} vst
+   * @param {*} visit
    */
-  travLevel(vst) {}
+  trav_level(visit) {}
   /**
    * 子树先序遍历
-   * @param {*} vst
+   * @param {*} visit
    */
-  travPre(vst) {}
+  trav_pre(visit) {}
   /**
    * 子树中序遍历
-   * @param {*} vst
+   * @param {*} visit
    */
-  travIn(vst) {}
+  trav_in(visit) {
+    switch (get_random_number(1, 5)) {
+      case 1:
+        trav_in1(this, visit);
+        break;
+      case 2:
+        trav_in2(this, visit);
+        break;
+      case 3:
+        trav_in3(this, visit);
+        break;
+      case 4:
+        trav_in4(this, visit);
+        break;
+      default:
+        trav_in5(this, visit);
+    }
+  }
   /**
    * 子树后序遍历
-   * @param {*} vst
+   * @param {*} visit
    */
-  travPost(vst) {}
-  /**
-   * 是否是根节点
-   * @param {*} x
-   */
+  trav_post(visit) {}
 }

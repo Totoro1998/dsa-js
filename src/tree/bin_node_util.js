@@ -82,3 +82,33 @@ export const uncle = (x) => {
 export const FromParentTo = (x) => {
   return is_root(x) ? x : is_left_child(x) ? x.parent.lc : x.parent.rc;
 };
+/**
+ * 中序遍历迭代版1
+ * @param {*} e
+ * @param {*} visit
+ */
+export const trav_in1 = (e, visit) => {};
+/**
+ * 中序遍历迭代版2
+ * @param {*} e
+ * @param {*} visit
+ */
+export const trav_in2 = (e, visit) => {};
+/**
+ * 中序遍历迭代版3
+ * @param {*} e
+ * @param {*} visit
+ */
+export const trav_in3 = (e, visit) => {};
+/**
+ * 中序遍历迭代版4
+ * @param {*} e
+ * @param {*} visit
+ */
+export const trav_in4 = (e, visit) => {};
+/**
+ * 中序遍历递归版
+ * @param {*} e
+ * @param {*} visit
+ */
+export const trav_in5 = (e, visit) => {};

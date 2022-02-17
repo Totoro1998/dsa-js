@@ -79,27 +79,107 @@ export const uncle = (x) => {
  * 来自父节点的引用
  * @param {*} x
  */
-export const FromParentTo = (x) => {
+export const from_parent_to = (x) => {
   return is_root(x) ? x : is_left_child(x) ? x.parent.lc : x.parent.rc;
+};
+/**
+ * 先序遍历迭代版1
+ * @param {*} x
+ * @param {*} visit
+ */
+export const trav_pre1 = (x, visit) => {
+  const s = [];
+  if (x) {
+    s.push(x);
+  }
+  while (s.length > 0) {
+    x = s.pop();
+    visit(x.data);
+    if (has_right_child(x)) {
+      s.push(x.rc);
+    }
+    if (has_left_child(x)) {
+      s.push(x.lc);
+    }
+  }
+};
+/**
+ * 先序遍历迭代版2
+ * @param {*} x
+ * @param {*} visit
+ */
+export const trav_pre2 = (x, visit) => {
+  const s = [];
+  while (true) {
+    visit_along_left_branch(x, visit, s);
+    if (s.length === 0) {
+      break;
+    }
+    x = s.pop();
+  }
 };
 /**
  * 中序遍历迭代版1
  * @param {*} e
  * @param {*} visit
  */
-export const trav_in1 = (e, visit) => {};
+export const trav_in1 = (x, visit) => {
+  const s = [];
+  while (true) {
+    go_along_left_branch(x, s);
+    if (s.length === 0) {
+      break;
+    }
+    x = s.pop();
+    visit(x.data);
+    x = x.rc;
+  }
+};
 /**
  * 中序遍历迭代版2
  * @param {*} e
  * @param {*} visit
  */
-export const trav_in2 = (e, visit) => {};
+export const trav_in2 = (e, visit) => {
+  const s = [];
+  while (true) {
+    if (x) {
+      s.push(x);
+      x = x.lc;
+    } else if (s.length !== 0) {
+      x = s.pop(); //尚未访问的最低祖先节点退栈
+      visit(x.data);
+      x = x.rc; //遍历祖先的右子树
+    } else {
+      break;
+    }
+  }
+};
 /**
  * 中序遍历迭代版3
  * @param {*} e
  * @param {*} visit
  */
-export const trav_in3 = (e, visit) => {};
+export const trav_in3 = (e, visit) => {
+  let back_track = false;
+  while (true) {
+    if (!back_track && has_left_child(x)) {
+      x = x.lc;
+    } else {
+      visit(x.data);
+      if (has_right_child(x)) {
+        x = x.rc;
+        back_track = false;
+      } else {
+        x = x.succ();
+        if (!x) {
+          break;
+        }
+        back_track = true;
+      }
+    }
+  }
+};
 /**
  * 中序遍历迭代版4
  * @param {*} e
@@ -107,8 +187,98 @@ export const trav_in3 = (e, visit) => {};
  */
 export const trav_in4 = (e, visit) => {};
 /**
- * 中序遍历递归版
+ * 中序遍历迭代版5
  * @param {*} e
  * @param {*} visit
  */
 export const trav_in5 = (e, visit) => {};
+/**
+ * 后序遍历迭代版
+ * @param {*} x
+ * @param {*} visit
+ */
+export const trav_post = (x, visit) => {
+  const s = [];
+  if (x) {
+    s.push(x);
+  }
+  while (s.length !== 0) {
+    if (s[s.length - 1] !== x.parent) {
+      goto_hlvfl(s);
+    }
+    x = s.pop();
+    visit(x.data);
+  }
+};
+/**
+ * 先序遍历递归版
+ * @param {*} x
+ * @param {*} visit
+ */
+export const trav_pre_r = (x, visit) => {
+  if (!x) {
+    return;
+  }
+  visit(x.data);
+  trav_pre_r(x.lc, visit);
+  trav_pre_r(x.rc, visit);
+};
+/**
+ * 后序遍历递归版
+ * @param {*} x
+ * @param {*} visit
+ */
+export const trav_post_r = (x, visit) => {
+  if (!x) {
+    return;
+  }
+  trav_post_r(x.lc, visit);
+  trav_post_r(x.rc, visit);
+  visit(x.data);
+};
+/**
+ * 中序遍历递归版
+ * @param {*} x
+ * @param {*} visit
+ */
+export const trav_in_r = (x, visit) => {
+  if (!x) {
+    return;
+  }
+  trav_post_r(x.lc, visit);
+  visit(x.data);
+  trav_post_r(x.rc, visit);
+};
+/**
+ * 从当前节点出发，沿左分支不断深入，直至没有左分之的节点，沿途节点遇到后立即访问
+ * @param {*} x
+ * @param {*} visit
+ * @param {*} s
+ */
+const visit_along_left_branch = (x, visit, s) => {
+  while (x) {
+    visit(x.data);
+    s.push(x.rc);
+    x = x.lc;
+  }
+};
+const go_along_left_branch = (x, s) => {
+  while (x) {
+    s.push(x);
+    x = x.lc;
+  }
+};
+const goto_hlvfl = (s) => {
+  let x = s[s.length - 1];
+  while (x) {
+    if (has_left_child(x)) {
+      if (has_right_child(x)) {
+        s.push(x.rc);
+      }
+      s.push(x.lc);
+    } else {
+      s.push(x.rc);
+    }
+  }
+  s.pop();
+};

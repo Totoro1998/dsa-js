@@ -1,4 +1,4 @@
-import { trav_in1 } from './bin_node_util.js';
+import { trav_in1, has_left_child, is_right_child } from './bin_node_util.js';
 export class bin_node {
   data = undefined; // 数值
   parent = undefined; // 父节点
@@ -47,9 +47,23 @@ export class bin_node {
     return this.rc;
   }
   /**
-   * 取当前节点的直接后继
+   * 取当前节点的直接后继,相对于中序遍历
    */
-  succ() {}
+  succ() {
+    let s = this;
+    if (this.rc) {
+      s = this.rc;
+      while (has_left_child(s)) {
+        s = s.lc;
+      }
+    } else {
+      while (is_right_child(x)) {
+        s = s.parent;
+      }
+      s = s.parent;
+    }
+    return s;
+  }
   /**
    * 子树层次遍历
    * @param {*} visit

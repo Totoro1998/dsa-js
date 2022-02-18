@@ -65,10 +65,23 @@ export class bin_node {
     return s;
   }
   /**
-   * 子树层次遍历
+   * 二叉树层次遍历算法
    * @param {*} visit
    */
-  trav_level(visit) {}
+  trav_level(visit) {
+    const q = [];
+    q.push(this);
+    while (q.length !== 0) {
+      const x = q.unshift();
+      visit(x.data);
+      if (has_left_child(x)) {
+        q.push(x.lc);
+      }
+      if (has_right_child(x)) {
+        q.push(x.rc);
+      }
+    }
+  }
   /**
    * 子树先序遍历
    * @param {*} visit

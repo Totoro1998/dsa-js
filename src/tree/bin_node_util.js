@@ -203,8 +203,9 @@ export const trav_post = (x, visit) => {
     s.push(x);
   }
   while (s.length !== 0) {
+    //若栈顶非当前节点之父(则必为其右兄)
     if (s[s.length - 1] !== x.parent) {
-      goto_hlvfl(s);
+      goto_hlvfl(s); //在以其右兄为根子树中，找到HLVFL
     }
     x = s.pop();
     visit(x.data);
@@ -268,6 +269,10 @@ const go_along_left_branch = (x, s) => {
     x = x.lc;
   }
 };
+/**
+ * 以s栈顶节点为根的子树中，找到最高左侧可见业节点
+ * @param {*} s
+ */
 const goto_hlvfl = (s) => {
   let x = s[s.length - 1];
   while (x) {
@@ -279,6 +284,7 @@ const goto_hlvfl = (s) => {
     } else {
       s.push(x.rc);
     }
+    x = s[s.length - 1];
   }
-  s.pop();
+  s.pop(); //删除栈顶的空节点
 };

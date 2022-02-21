@@ -57,7 +57,8 @@ export class bin_node {
         s = s.lc;
       }
     } else {
-      while (is_right_child(x)) {
+      //应是将当前节点包含于其左子树中的最低祖先
+      while (is_right_child(s)) {
         s = s.parent;
       }
       s = s.parent;

@@ -161,17 +161,19 @@ export const trav_in2 = (e, visit) => {
  * @param {*} visit
  */
 export const trav_in3 = (e, visit) => {
-  let back_track = false;
+  let back_track = false; //前一步是否刚从右子树回溯
   while (true) {
+    //若有左子树且不是刚刚回溯
     if (!back_track && has_left_child(x)) {
       x = x.lc;
     } else {
       visit(x.data);
+      //若右子树非空，深入右子树继续遍历
       if (has_right_child(x)) {
         x = x.rc;
         back_track = false;
       } else {
-        x = x.succ();
+        x = x.succ(); //中序遍历直接后继
         if (!x) {
           break;
         }
@@ -270,7 +272,7 @@ const go_along_left_branch = (x, s) => {
   }
 };
 /**
- * 以s栈顶节点为根的子树中，找到最高左侧可见业节点
+ * 以s栈顶节点为根的子树中，找到最高左侧可见叶节点
  * @param {*} s
  */
 const goto_hlvfl = (s) => {

@@ -1,7 +1,7 @@
 import { binSearch, fibSearch } from '../utils/search.js';
 import { get_random_number } from '../utils/number.js';
 const DEFAULT_CAPACITY = 3;
-export default class Vector {
+export default class vector {
   size; //规模
   capacity; //容量
   elem; //数据区
@@ -22,6 +22,10 @@ export default class Vector {
       }
       this.#copyFrom(arr, lo, hi);
     }
+  }
+  static create_vector_by_graph(c = DEFAULT_CAPACITY, s = 0, v = 0) {
+    this.elem = new Array(c).fill(v);
+    for (let size = 0; size < s; this.elem[size++] = v) {}
   }
   /**
    * 复制数组区间A[lo, hi)

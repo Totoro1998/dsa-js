@@ -276,8 +276,12 @@ const go_along_left_branch = (x, s) => {
  * @param {*} s
  */
 const goto_hlvfl = (s) => {
-  let x = s[s.length - 1];
-  while (x) {
+  while (true) {
+    let x = s[s.length - 1]; //自顶而下，反复检查当前节点（即栈顶）
+    if (!x) {
+      break;
+    }
+    //尽可能向左
     if (has_left_child(x)) {
       if (has_right_child(x)) {
         s.push(x.rc);
@@ -286,7 +290,6 @@ const goto_hlvfl = (s) => {
     } else {
       s.push(x.rc);
     }
-    x = s[s.length - 1];
   }
   s.pop(); //删除栈顶的空节点
 };

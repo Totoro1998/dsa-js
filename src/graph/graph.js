@@ -1,15 +1,5 @@
-//顶点状态
-const UNDISCOVERED = 0;
-const DISCOVERED = 1;
-const VISITED = 2;
-//边在遍历树中所属的类型
-const UNDETERMINED = 0;
-const TREE = 1;
-const CROSS = 2;
-const FORWARD = 3;
-const BACKWARD = 4;
-
-export class graph {
+import {vertex_status,edge_type} from './const.js'
+export default class graph {
   n; //顶点总数
   e; //边总数
   /**
@@ -17,14 +7,14 @@ export class graph {
    */
   reset() {
       for (let i = 0; i < n; i++) {
-          status(i) = UNDISCOVERED;
+          status(i) = vertex_status.UNDISCOVERED;
           d_time(i) = -1;
           f_time(i) = -1;
           parent(i) = -1;
           priority(i) = Math.Infinity
           for (let j = 0; j < n; j++){
               if (exists(i, j)) {
-                  type(i,j) = UNDETERMINED
+                  type(i,j) = edge_type.UNDETERMINED
               }
           }
     }

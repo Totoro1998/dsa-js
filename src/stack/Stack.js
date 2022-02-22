@@ -1,5 +1,5 @@
-import Vector from '../vector/Vector.js';
-export default class Stack extends Vector {
+import vector from '../vector/vector.js';
+export default class Stack extends vector {
   constructor() {
     super();
   }

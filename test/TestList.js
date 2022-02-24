@@ -1,3 +1,3 @@
-import List from '../src/list/List.js';
+import list from '../src/list/list.js';
 
-const list = new List();
+const list = new list();

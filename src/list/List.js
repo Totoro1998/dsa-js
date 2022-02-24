@@ -1,5 +1,5 @@
-import ListNode from './ListNode.js';
-export default class List {
+import list_node from './list_node.js';
+export default class list {
   size; //规模
   header; //头哨兵
   trailer; //尾哨兵
@@ -7,8 +7,8 @@ export default class List {
    * 列表创建时的初始化
    */
   #init() {
-    this.header = new ListNode();
-    this.trailer = new ListNode();
+    this.header = new list_node();
+    this.trailer = new list_node();
     this.header.succ = this.trailer;
     this.trailer.pred = this.header;
     this.size = 0;

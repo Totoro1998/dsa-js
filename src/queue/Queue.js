@@ -1,5 +1,5 @@
-import List from '../list/List.js';
-export default class Queue extends List {
+import list from '../list/list.js';
+export default class Queue extends list {
   constructor() {
     super();
   }

@@ -1,4 +1,4 @@
-export default class ListNode {
+export default class list_node {
   data; //数值
   pred; //前驱
   succ; //后继
@@ -11,7 +11,7 @@ export default class ListNode {
    * 紧靠当前节点之前插入新节点
    */
   insertAsPred(e) {
-    const node = new ListNode(e, this.pred, this);
+    const node = new list_node(e, this.pred, this);
     if (this.pred) {
       this.pre.succ = node;
     }
@@ -22,7 +22,7 @@ export default class ListNode {
    * 紧靠当前节点之后插入新节点
    */
   insertAsSucc(e) {
-    const node = new ListNode(e, this, this.succ);
+    const node = new list_node(e, this, this.succ);
     if (this.succ) {
       this.succ.pre = node;
     }

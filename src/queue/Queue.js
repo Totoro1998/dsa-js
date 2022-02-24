@@ -7,7 +7,7 @@ export default class Queue extends list {
    * 尾部插入
    */
   enqueue(e) {
-    this.insertAsLast(e);
+    this.insert_as_last(e);
   }
   /**
    * 首部删除

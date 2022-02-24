@@ -179,19 +179,19 @@ export default class vector {
       this.elem[i++] = B[j++]; //将B残余的后缀归入A中
     }
     A = undefined;
-    B = undefined; //释放临时空间：mergeSort()过程中，如何避免此类反复的new/delete？
+    B = undefined; //释放临时空间：merge_sort()过程中，如何避免此类反复的new/delete？
     C = undefined;
   }
   /**
    * 归并排序算法
    */
-  #mergeSort(lo, hi) {
+  #merge_sort(lo, hi) {
     if (hi - lo < 2) {
       return;
     }
     const mi = (lo + hi) >> 1;
-    this.#mergeSort(lo, mi);
-    this.#mergeSort(mi, hi);
+    this.#merge_sort(lo, mi);
+    this.#merge_sort(mi, hi);
     this.#merge(lo, mi, hi);
   }
   /**
@@ -307,7 +307,7 @@ export default class vector {
         this.#selectionSort(lo, hi);
         break;
       case 3:
-        this.#mergeSort(lo, hi);
+        this.#merge_sort(lo, hi);
         break;
       case 4:
         this.#quickSort(lo, hi);

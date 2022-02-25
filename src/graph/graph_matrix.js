@@ -137,7 +137,7 @@ export class graph_matrix extends graph {
   remove_vertex(i) {
     for (let j = 0; j < this.n; j++) {
       if (this.exists(i, j)) {
-        delete this.E[i][j];
+        this.E[i][j] = null;
         this.V[j].in_degree--;
         this.e--;
       }
@@ -149,7 +149,7 @@ export class graph_matrix extends graph {
     for (let j = 0; j < this.n; j++) {
       let e = this.E[j].remove(i); //删除列
       if (e) {
-        delete e;
+        e = null;
         this.V[j].out_degree--;
         this.e--;
       }
@@ -211,8 +211,7 @@ export class graph_matrix extends graph {
    */
   remove_edge(i, j) {
     let e_bak = this.edge(i, j);
-    delete this.E[i][j];
-    this.E[i][j] = undefined;
+    this.E[i][j] = null;
     this.e--;
     this.V[i].out_degree--;
     this.V[j].in_degree--;

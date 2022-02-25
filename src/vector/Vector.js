@@ -40,7 +40,7 @@ export default class vector {
   /**
    * 空间不足扩容
    */
-  #expand() {
+  expand() {
     if (this.size < this.capacity) {
       return;
     }
@@ -48,12 +48,21 @@ export default class vector {
       this.capacity = DEFAULT_CAPACITY;
     }
     this.capacity = this.capacity * 2;
-    let oldElem = this.elem;
+    let old_elem = this.elem;
     this.elem = new Array(this.capacity);
     for (let i = 0; i < this.size; i++) {
-      this.elem = oldElem[i];
+      this.elem[i] = old_elem[i];
     }
-    oldElem = undefined;
+    old_elem = null;
+  }
+  get_elem() {
+    const return_elem = [];
+    for (let i = 0; i < this.len(); i++) {
+      if (this.elem[i]) {
+        return_elem[i] = this.elem[i];
+      }
+    }
+    return return_elem;
   }
   /**
    * 装填因子过小时压缩
@@ -219,13 +228,28 @@ export default class vector {
   /**
    * 规模
    */
-  size() {
+  len() {
     return this.size;
+  }
+  /**
+   * 前后倒置
+   */
+  reverse() {
+    const size = this.len();
+    if (size < 2) {
+      return;
+    }
+    for (let i = 0; i < size; i++) {
+      if (i >= size >> 1) {
+        break;
+      }
+      [this.elem[i], this.elem[size - 1 - i]] = [this.elem[size - 1 - i], this.elem[i]];
+    }
   }
   /**
    * 判空
    */
-  isEmpty() {
+  empty() {
     return !this.size;
   }
   /**
@@ -251,9 +275,9 @@ export default class vector {
    * 删除秩为r的元素
    * @param {*} r
    */
-  removeByIndex(r) {
+  remove_by_index(r) {
     const e = this.elem[r]; //备份被删除元素
-    this.removeByRange(r, r + 1); //调用区间删除算法，等效于对区间[r, r + 1)的删除
+    this.remove_by_range(r, r + 1); //调用区间删除算法，等效于对区间[r, r + 1)的删除
     return e; //返回被删除元素
   }
   /**
@@ -261,7 +285,7 @@ export default class vector {
    * @param {*} lo
    * @param {*} hi
    */
-  removeByRange(lo = 0, hi = this.size) {
+  remove_by_range(lo = 0, hi = this.size) {
     if (lo === hi) {
       return 0;
     }
@@ -277,8 +301,8 @@ export default class vector {
    * @param {*} r
    * @param {*} e
    */
-  insertAt(r, e) {
-    this.#expand();
+  insert_at(r, e) {
+    this.expand();
     for (let i = this.size; i > r; i--) {
       this.elem[i] = this.elem[i - 1]; //顺次后移一个单元
     }
@@ -291,7 +315,7 @@ export default class vector {
    * @param {*} e
    */
   insert(e) {
-    return this.insertAt(this.size, e);
+    return this.insert_at(this.size, e);
   }
   /**
    * 对[lo, hi)排序
@@ -345,7 +369,7 @@ export default class vector {
         let j = i + 1;
         while (j < this.size) {
           if ((this.elem[i] = this.elem[j])) {
-            this.removeByIndex(j); //若雷同删除后者
+            this.remove_by_index(j); //若雷同删除后者
           } else {
             j++;
           }
@@ -363,7 +387,7 @@ export default class vector {
         if (this.find(this.elem[i], 0, i) < 0) {
           i++;
         } else {
-          this.removeByIndex(i);
+          this.remove_by_index(i);
         }
       }
       return old_size - this.size;
@@ -412,6 +436,15 @@ export default class vector {
         return uniquifyA();
       default:
         return uniquifyB();
+    }
+  }
+  /**
+   * 遍历算法
+   * @param {*} visit
+   */
+  traverse(visit) {
+    for (let i = 0; i < this.size; i++) {
+      visit(this.elem[i]);
     }
   }
 }

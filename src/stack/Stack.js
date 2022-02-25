@@ -14,12 +14,12 @@ export default class stack extends vector {
    * 删除末元素
    */
   pop() {
-    return this.remove(this.size() - 1);
+    return this.remove_by_index(this.len() - 1);
   }
   /**
    * 取顶，直接返回向量的末元素
    */
   top() {
-    return this.elem[this.size() - 1];
+    return this.elem[this.len() - 1];
   }
 }

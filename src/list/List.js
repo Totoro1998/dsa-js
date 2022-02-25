@@ -45,7 +45,7 @@ export default class list {
   /**
    * 规模
    */
-  size() {
+  len() {
     return this.size;
   }
   /**
@@ -160,7 +160,7 @@ export default class list {
     const e = p.data;
     p.pred.succ = p.succ;
     p.succ.pred = p.pred;
-    delete p;
+    p = null;
     this.size--;
     return e;
   }

@@ -27,7 +27,7 @@ export class bin_tree {
   /**
    *规模
    */
-  size() {
+  len() {
     return this.size;
   }
   /**
@@ -74,14 +74,14 @@ export class bin_tree {
     return x.rc;
   }
   /**
-   * t作为x的左子树插入
+   * s作为x的左子树插入
    * @param {*} x
    * @param {*} t
    */
-  attach_as_lc(x, t) {
+  attach_as_lc(x, s) {
     x.lc = s.root;
     x.lc.parent = x;
-    this.size += s.size();
+    this.size += s.len();
     update_height_above(x);
     s.root = undefined;
     s.size = 0;
@@ -89,14 +89,14 @@ export class bin_tree {
     return x;
   }
   /**
-   * t作为x的右子树插入
+   * s作为x的右子树插入
    * @param {*} x
-   * @param {*} t
+   * @param {*} s
    */
   attach_as_rc(x, s) {
     x.rc = s.root;
     x.rc.parent = x;
-    this.size += s.size();
+    this.size += s.len();
     update_height_above(x);
     s.root = undefined;
     s.size = 0;
@@ -123,8 +123,8 @@ export class bin_tree {
       return 0
     }
     let n = 1 + remove_at(x.lc) + remove_at(x.rc)
-    delete x.data;
-    delete x;
+    x.data = undefined;
+    x = null;
     return n
   }
   /**
@@ -136,7 +136,7 @@ export class bin_tree {
     update_height_above(x.parent);
     const s = new bin_tree()
     s.root = x;
-    s.size = x.size();
+    s.size = x.len();
     x.parent = undefined;
     this.size -= s.size;
     return s;

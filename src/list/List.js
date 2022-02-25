@@ -10,6 +10,9 @@ export default class list {
   constructor() {
     this.init();
   }
+  /**
+   * 初始化
+   */
   init() {
     this.header = new list_node();
     this.trailer = new list_node();
@@ -32,7 +35,7 @@ export default class list {
    * @param {*} p
    * @param {*} n
    */
-  copy_ndes(p, n) {
+  copy_nodes(p, n) {
     this.init();
     while (n--) {
       this.insert_as_last(p.data);
@@ -71,7 +74,7 @@ export default class list {
     return p && p.pred && p.succ;
   }
   /**
-   * 无序区间查找，在无序列表内节点p（可能是trailer）的n个（真）前驱中，找到等于e的最后者
+   * 无序区间查找，在无序列表内节点p（可能是trailer）的n个（真）前驱中(不包含p)，找到等于e的最后者
    * @param {*} e
    * @param {*} n
    * @param {*} p
@@ -92,14 +95,13 @@ export default class list {
    * @param {*} p
    */
   search(e, n = this.size, p = this.trailer) {
-    while (true) {
+    while (0 <= n--) {
       p = p.pred;
-      n--;
-      if (!(-1 < n && e < p.data)) {
+      if (p.data <= e) {
         break;
       }
     }
-    return p;
+    return p; //失败时，返回左边界的前驱（可能是header）
   }
   /**
    * 在p及其n-1个后继中选出最大者
@@ -155,12 +157,12 @@ export default class list {
    * @param {*} p
    */
   remove(p) {
-    const data = p.data;
+    const e = p.data;
     p.pred.succ = p.succ;
     p.succ.pred = p.pred;
     delete p;
     this.size--;
-    return data;
+    return e;
   }
   /**
    * 列表区间排序
@@ -172,14 +174,17 @@ export default class list {
    * 无序去重
    */
   deduplicate() {
+    if (this.size < 2) {
+      return;
+    }
     const old_size = this.size;
     let p = this.first();
     for (let r = 0; p.succ; p = p.succ) {
-      let q = this.find(p.data, r, p);
+      let q = this.find(p.data, r, p); //在p的r个（真）前驱中查找雷同者
       if (q) {
         this.remove(q);
       } else {
-        r++;
+        r++; //否则r+1，为下一个p的前驱查找数量加1
       }
     }
     return old_size - this.size;
@@ -191,14 +196,16 @@ export default class list {
     if (this.size < 2) {
       return;
     }
-    let ols_size = this.size;
+    let old_size = this.size;
     let p = this.first();
     let q;
     while (true) {
-      q = p.succ;
+      q = p.succ; //q为p的后继
+      //反复考察紧邻的节点对
       if (!q.succ) {
         break;
       }
+      //若互异，转向下一区段
       if (p.data !== q.data) {
         p = q;
       } else {
@@ -275,7 +282,7 @@ export default class list {
    * @param {*} m
    */
   merge(L, p = this.header.succ, n = this.size, q = L.header.succ, m = L.size) {
-    let pp = p.pred;
+    let pp = p.pred; //借助前驱（有可能是header）
     while (0 < m && q.data !== p.data) {
       if (0 < n && p.data <= q.data) {
         p = p.succ;
@@ -289,6 +296,39 @@ export default class list {
     return pp.succ; //更新的首节点
   }
   /**
+   * 对列表中起始于位置p、宽度为n的区间做插入排序
+   * @param {*} p
+   * @param {*} n
+   */
+  insertion_sort(p, n) {
+    for (let r = 0; r < n; r++) {
+      const searched_item = this.search(p.data, r, p);
+      this.insert_as_succ(searched_item, p.data);
+      p = p.succ; //转向下一个节点
+      this.remove(p.pred);
+    }
+  }
+  /**
+   * 对列表中起始于位置p、宽度为n的区间做选择排序
+   * @param {*} p
+   * @param {*} n
+   */
+  selection_sort(p, n) {
+    let head = p.pred;
+    let tail = p;
+    //待排序区间(head,tail]
+    for (let i = 0; i < n; i++) {
+      tail = tail.succ;
+    }
+    //在至少还剩两个节点之前，在待排序区间内
+    while (1 < n) {
+      let max = this.select_max(head.succ, n);
+      this.insert_as_pred(this.remove(max), tail);
+      tail = tail.pred;
+      n--;
+    }
+  }
+  /**
    * 列表的归并排序算法：对起始于位置p的n个元素排序
    * @param {*} p
    * @param {*} n
@@ -298,42 +338,13 @@ export default class list {
       return;
     }
     let m = n >> 1;
+    let q = p;
     for (let i = 0; i < m; i++) {
       q = q.succ;
     }
-    this.merge_sort(p, m);
-    this.merge_sort(q, n - m);
-    p = this.merge(p, m, this, q, n - m);
-  }
-  /**
-   * 对列表中起始于位置p、宽度为n的区间做选择排序
-   * @param {*} p
-   * @param {*} n
-   */
-  selection_sort(p, n) {
-    let head = p.head;
-    let tail = p;
-    for (let i = 0; i < n; i++) {
-      tail = tail.succ;
-    }
-    while (1 < n) {
-      let max = this.select_max(head.succ, n);
-      this.insert_as_pred(this.remove(max), tail);
-      tail = tail.pred;
-      n--;
-    }
-  }
-  /**
-   * 对列表中起始于位置p、宽度为n的区间做插入排序
-   * @param {*} p
-   * @param {*} n
-   */
-  insertion_sort(p, n) {
-    for (let r = 0; r < n; r++) {
-      this.insert_as_succ(this.search(p.data, r, p), p.data);
-      p = p.succ;
-      this.remove(p.pred);
-    }
+    this.merge_sort(p, m); //对前子列表进行排序
+    this.merge_sort(q, n - m); //对后子列表进行排序
+    p = this.merge(this, p, m, q, n - m);
   }
   /**
    * 对列表中起始于位置p、宽度为n的区间做基数排序

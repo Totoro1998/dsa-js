@@ -219,7 +219,7 @@ export default class vector {
   /**
    * 规模
    */
-  length() {
+  size() {
     return this.size;
   }
   /**

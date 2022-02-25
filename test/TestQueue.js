@@ -1,3 +1,3 @@
-import Queue from '../src/queue/Queue.js';
+import queue from '../src/queue/queue.js';
 
-const list = new Queue();
+const list = new queue();

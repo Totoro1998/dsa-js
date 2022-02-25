@@ -1,4 +1,4 @@
-import Stack from '../src/stack/Stack.js';
-const stack = new Stack();
+import stack from '../src/stack/stack.js';
+const stack = new stack();
 stack.push(1);
 console.log(stack.top(1));

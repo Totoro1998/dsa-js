@@ -1,5 +1,5 @@
 import vector from '../vector/vector.js';
-export default class Stack extends vector {
+export default class stack extends vector {
   constructor() {
     super();
   }
@@ -20,6 +20,6 @@ export default class Stack extends vector {
    * 取顶，直接返回向量的末元素
    */
   top() {
-    return this.elem[this.length() - 1];
+    return this.elem[this.size() - 1];
   }
 }

@@ -1,12 +1,12 @@
 import { bin_node } from './bin_node';
-export class bin_tree {
+export default class bin_tree {
   size;
   root;
   /**
    * 更新节点x的高度
    * @param {*} x
    */
-  updateHeight(x) {
+  update_height(x) {
     x.height = Math.max(x.lc.height, x.rc.height) + 1;
     return x.height;
   }
@@ -16,7 +16,7 @@ export class bin_tree {
    */
   update_height_above(x) {
     while (x) {
-      updateHeight(x);
+      update_height(x);
       x = x.parent;
     }
   }

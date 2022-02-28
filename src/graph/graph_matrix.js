@@ -37,8 +37,8 @@ class edge {
  * 基于向量，以邻接矩阵形式实现的图结
  */
 export class graph_matrix extends graph {
-  V; //顶点集（向量）
-  E; //边集（邻接矩阵即二维数组）
+  V = new vector(); //顶点集（向量）
+  E = new vector(); //边集（邻接矩阵即二维数组）
   constructor() {
     super();
     this.n = 0;
@@ -49,7 +49,7 @@ export class graph_matrix extends graph {
    * @param {*} i
    */
   vertex(i) {
-    return V[i].data;
+    return this.V[i].data;
   }
   /**
    * 查询第i个顶点的入度
@@ -124,10 +124,10 @@ export class graph_matrix extends graph {
    */
   insert_vertex(v) {
     for (let j = 0; j < this.n; j++) {
-      this.E[j].insert(undefined);
+      this.E[j].insert(new vector(this.n, this.n, undefined)); //各顶点预留一条潜在的关联边
     }
     this.n++;
-    this.E.insert(new vector(this.n, this.n, undefined));
+    this.E.insert(vector.create_vector_by_graph(this.n, this.n, undefined)); //创建新顶点对应的边变量
     return this.V.insert(new vertex(v));
   }
   /**
@@ -189,7 +189,7 @@ export class graph_matrix extends graph {
     return this.E[i][j].weight;
   }
   /**
-   * 边的动态操作
+   * 边的动态操作，插入权重为w的边e=(i,j)
    * @param {*} e
    * @param {*} w
    * @param {*} i

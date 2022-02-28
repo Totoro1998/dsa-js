@@ -7,11 +7,11 @@ export default class graph {
    */
   reset() {
       for (let i = 0; i < this.n; i++) {
-          status(i) = vertex_status.UNDISCOVERED;
-          d_time(i) = -1;
-          f_time(i) = -1;
-          parent(i) = -1;
-          priority(i) = Math.Infinity
+          this.status(i) = vertex_status.UNDISCOVERED;
+          this.d_time(i) = -1;
+          this.f_time(i) = -1;
+          this.parent(i) = -1;
+          this.priority(i) = Math.Infinity
           for (let j = 0; j < this.n; j++){
               if (this.exists(i, j)) {
                   this.type(i,j) = edge_type.UNDETERMINED
@@ -267,7 +267,7 @@ export default class graph {
   weight(v, u) {}
   /**
    * 广度优先搜索BFS算法（单个连通域），
-   * 历结束后，所有访问过的顶点通过parent[]指针依次联接，从整体上给出了原图某一连通或可达域的一棵遍历树，称作广度优先搜索树
+   * 遍历结束后，所有访问过的顶点通过parent[]指针依次联接，从整体上给出了原图某一连通或可达域的一棵遍历树，称作广度优先搜索树
    * @param {*} v 
    * @param {*} clock 
    */
@@ -278,6 +278,7 @@ export default class graph {
     while (Q.length !== 0) {
       let v = Q.unshift(); // 取出队首顶点v
       this.d_time(v) = ++clock;
+      //枚举v的所有邻居u
       for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)){
         // 若u尚未被发现
         if (vertex_status.UNDISCOVERED === this.status(u)) {
@@ -311,17 +312,22 @@ export default class graph {
           this.parent(u) = v;
           this.DFS(u, clock);
           break;
-        //u已被发现但尚未访问完毕，应属被后代指向的祖先，若顶点u处于DISCOVERED状态，则意味着在此处发现一个有向环路
+        //若顶点u处于DISCOVERED状态，则意味着在此处发现一个有向环路。此时在DFS遍历树中u必为v的祖先，故应将边(v,u)归类为后向边
         case vertex_status.DISCOVERED:
           this.type(v, u) = edge_type.BACKWARD;
           break;
         //u已访问完毕(VISITED，有向图)，则视承袭关系分为前向边或跨边
         default:
+          // 用于判定DFS树中v是否u的祖先
           this.type(v, u) = (this.d_time(v) < this.d_time(u)) ? edge_type.FORWARD : edge_type.CROSS;
           break;
       }
     }
     this.status(v) = vertex_status.VISITED;
+    /**
+     * 这里为每个顶点v都记录了被发现的和访问完成的时刻， 对应的时间区间[d_time(v),f_time(v)]均称作v的活跃期（active duration）。
+     * 实际上，任意顶点v和u之间是否存在祖先/后代的“血缘” 关系，完全取决于二者的活跃期是否相互包含。
+     */
     this.f_time(v) = ++clock;
   }
   /**

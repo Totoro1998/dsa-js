@@ -115,4 +115,56 @@ export class bin_node {
    * @param {*} visit
    */
   trav_post(visit) {}
+  /**
+   * 逆时针旋转
+   */
+  zag() {
+    let r_child = this.rc;
+    r_child.parent = this.parent;
+    if (r_child.parent) {
+      this.data === r_child.parent.lc.data ? (r_child.parent.lc = r_child) : (r_child.parent.rc = r_child);
+    }
+    this.rc = r_child.lc;
+    if (this.rc) {
+      this.rc.parent = this;
+    }
+    r_child.lc = this;
+    this.parent = r_child;
+    this.height = 1 + Math.max(this.lc.height, this.rc.height);
+    r_child.height = 1 + Math.max(r_child.lc.height, r_child.rc.height);
+    for (let x = r_child.parent; x; x.parent) {
+      if (x.height === Math.max(x.lc.height, x.rc.height) + 1) {
+        break;
+      } else {
+        x.height = Math.max(x.lc.height, x.rc.height) + 1;
+      }
+    }
+    return r_child;
+  }
+  /**
+   * 顺时针旋转
+   */
+  zig() {
+    let l_child = this.lc;
+    l_child.parent = this.parent;
+    if (l_child.parent) {
+      this.data === l_child.parent.rc.data ? (l_child.parent.rc = l_child) : (l_child.parent.lc = l_child);
+    }
+    this.lc = l_child.rc.lc;
+    if (this.lc) {
+      this.lc.parent = this;
+    }
+    l_child.rc = this;
+    this.parent = l_child;
+    this.height = Math.max(this.lc.height, this.rc.height) + 1;
+    l_child.height = Math.max(l_child.lc.height.l_child.rc.height) + 1;
+    for (let x = l_child.parent; x; x = x.parent) {
+      if (x.height === Math.max(x.lc.height, x.rc.height) + 1) {
+        break;
+      } else {
+        x.height = Math.max(x.lc.height, x.rc.height) + 1;
+      }
+    }
+    return l_child;
+  }
 }

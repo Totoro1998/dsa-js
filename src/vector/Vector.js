@@ -23,9 +23,15 @@ export default class vector {
       this.#copyFrom(arr, lo, hi);
     }
   }
-  static create_vector_by_graph(c = DEFAULT_CAPACITY, s = 0, v = 0) {
-    this.elem = new Array(c).fill(v);
-    for (let size = 0; size < s; this.elem[size++] = v) {}
+  /**
+   * 容量为c、规模为s、所有元素初始为v
+   * @param {*} c
+   * @param {*} s
+   */
+  static create_vector_by_graph(c = DEFAULT_CAPACITY, s = 0, v) {
+    this.capacity = c;
+    this.elem = new Array(this.capacity);
+    for (this.size = 0; this.size < s; this.elem[this.size++] = v);
   }
   /**
    * 复制数组区间A[lo, hi)

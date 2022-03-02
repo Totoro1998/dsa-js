@@ -1,4 +1,5 @@
 import { trav_in1, has_left_child, is_right_child } from './bin_node_util.js';
+import vector from '../vector/vector.js';
 export class bin_node {
   data = undefined; // 数值
   parent = undefined; // 父节点
@@ -166,5 +167,28 @@ export class bin_node {
       }
     }
     return l_child;
+  }
+}
+export class bt_node {
+  parent;
+  key;
+  child;
+  constructor(e, lc = null, rc = null) {
+    this.key = new vector();
+    this.child = new vector();
+    this.parent = null;
+    if (!e) {
+      this.child.insert(0, null);
+    } else {
+      this.key.insert(0, e);
+      this.child.insert(0, lc);
+      this.child.insert(1, rc);
+      if (lc) {
+        lc.parent = this;
+      }
+      if (rc) {
+        rc.parent = this;
+      }
+    }
   }
 }

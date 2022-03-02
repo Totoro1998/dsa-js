@@ -1,5 +1,5 @@
 import binary_search_tree from './binary_search_tree.js';
-import { bin_node } from './bin_node.js';
+import { bin_node } from './tree_node.js';
 import { avl_balanced, from_parent_to, is_left_child, update_height } from './bin_node_util.js';
 
 export default class alv_tree extends binary_search_tree {

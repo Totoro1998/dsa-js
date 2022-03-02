@@ -1,4 +1,4 @@
-import { bin_node } from './bin_node.js';
+import { bin_node } from './tree_node.js';
 import bin_tree from './bin_tree.js';
 import { is_left_child, has_left_child, has_right_child, update_height } from './bin_node_util.js';
 export default class binary_search_tree extends bin_tree {

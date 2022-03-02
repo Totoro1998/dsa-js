@@ -1,4 +1,4 @@
-import { bin_node } from './bin_node';
+import { bin_node } from './tree_node';
 import { update_height } from './bin_node_util.js';
 export default class bin_tree {
   size;

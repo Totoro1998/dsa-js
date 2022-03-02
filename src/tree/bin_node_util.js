@@ -293,3 +293,23 @@ const goto_hlvfl = (s) => {
   }
   s.pop(); //删除栈顶的空节点
 };
+/**
+ * 更新节点x的高度
+ */
+export const update_height = (x) => {
+  x.height = Math.max(x.lc.height, x.rc.height) + 1;
+  return x.height;
+};
+const height_updated = (x) => {
+  return x.height === Math.max(x.lc.height, x.rc.height) + 1;
+};
+const balanced = (x) => {
+  return x.lc.height === x.rc.height;
+};
+const bal_fac = (x) => {
+  return x.lc.height - x.rc.height;
+};
+const avl_balanced = (x) => {
+  const bal_diff = bal_fac(x);
+  return -2 < bal_diff && bal_diff < 2;
+};

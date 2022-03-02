@@ -1,15 +1,8 @@
 import { bin_node } from './bin_node';
+import { update_height } from './bin_node_util.js';
 export default class bin_tree {
   size;
   root;
-  /**
-   * 更新节点x的高度
-   * @param {*} x
-   */
-  update_height(x) {
-    x.height = Math.max(x.lc.height, x.rc.height) + 1;
-    return x.height;
-  }
   /**
    * 更新节点x及其祖先的高度
    * @param {*} x
@@ -59,7 +52,7 @@ export default class bin_tree {
   insert_as_lc(x, e) {
     this.size++;
     x.insert_as_lc(e);
-    update_height_above(x);
+    this.update_height_above(x);
     return x.lc;
   }
   /**
@@ -70,7 +63,7 @@ export default class bin_tree {
   insert_as_rc(x, e) {
     this.size++;
     x.insert_as_rc(e);
-    update_height_above(x);
+    this.update_height_above(x);
     return x.rc;
   }
   /**
@@ -82,7 +75,7 @@ export default class bin_tree {
     x.lc = s.root;
     x.lc.parent = x;
     this.size += s.len();
-    update_height_above(x);
+    this.update_height_above(x);
     s.root = undefined;
     s.size = 0;
     s = undefined;
@@ -97,7 +90,7 @@ export default class bin_tree {
     x.rc = s.root;
     x.rc.parent = x;
     this.size += s.len();
-    update_height_above(x);
+    this.update_height_above(x);
     s.root = undefined;
     s.size = 0;
     s = undefined;
@@ -109,7 +102,7 @@ export default class bin_tree {
    */
   remove(x) {
     from_parent_to(x) = undefined;
-    update_height_above(x.parent);
+    this.update_height_above(x.parent);
     const n = remove_at(x);
     this.size -= n;
     return n;
@@ -133,7 +126,7 @@ export default class bin_tree {
    */
   secede(x) {
     from_parent_to(x) = undefined; //切断来自父节点的引用
-    update_height_above(x.parent);
+    this.update_height_above(x.parent);
     const s = new bin_tree()
     s.root = x;
     s.size = x.len();

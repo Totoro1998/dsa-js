@@ -1,13 +1,11 @@
 import { bin_node } from './bin_node.js';
 import bin_tree from './bin_tree.js';
-import { is_left_child } from './bin_node_util.js';
-
-const update_height = (x) => {
-  x.height = Math.max(x.lc.height, x.rc.height) + 1;
-  return x.height;
-};
-export default class bin_search_tree extends bin_tree {
-  hot; //命中的节点父亲
+import { is_left_child, has_left_child, has_right_child, update_height } from './bin_node_util.js';
+export default class binary_search_tree extends bin_tree {
+  hot; //命中的节点的父亲
+  constructor() {
+    super();
+  }
   /**
    *
    * @param {*} a
@@ -70,6 +68,11 @@ export default class bin_search_tree extends bin_tree {
       }
     }
   }
+  /**
+   * 该函数查找成功后，返回查找到的节点，并将hot设置为该节点的父节点
+   * 查找失败时，会返回已经比较过大小的“空节点”，并将hot设置为该“空节点”的父节点
+   * @param {*} e
+   */
   search(e) {
     if (!this.root || e === this.root.data) {
       this.hot = null;
@@ -106,25 +109,36 @@ export default class bin_search_tree extends bin_tree {
     this.update_height_above(x);
     return x;
   }
+  /**
+   * BST节点删除算法：删除位置x所指的节点
+   * 返回值指向实际被删除节点的接替者，hot指向实际被删除节点的父亲——二者均有可能是NULL
+   * @param {*} x
+   * @param {*} hot
+   */
   remove_at(x, hot) {
-    const w = x;
-    const succ = null;
-    if (!this.has_left_child(x)) {
+    const w = x; //实际被删除的节点
+    const succ = null; //实际被删除节点的接替者
+    /**
+     * 若x的左子树为空，则可直接将x替换为其右子树
+     */
+    if (!has_left_child(x)) {
       x = x.rc;
       succ = x;
-    } else if (!this.has_right_child(x)) {
+    } else if (!has_right_child(x)) {
       x = x.lc;
       succ = x;
     } else {
+      //若左右子树均存在，则选择x的直接后继作为实际被摘除节点
       w = w.succ();
-      [x.data, w.data] = [w.data, x.data];
+      [x.data, w.data] = [w.data, x.data]; //交换数据
+      succ = w.rc; //只可能是右节点，因为w是直接后继
       const u = w.parent;
-      succ = w.rc;
-      u.data === x.data ? (u.rc = succ) : (u.lc = succ);
+      //若恰好u是x(经过交换的),succ为空
+      u.data === x.data ? (u.rc = succ) : (u.lc = succ); //更新w的父节点
     }
-    hot = w.parent;
+    hot = w.parent; //记录实际被删除节点的父亲
     if (succ) {
-      succ.parent = hot;
+      succ.parent = hot; //将被删除节点的接替者与hot相联
     }
     w.data = null;
     w = null;

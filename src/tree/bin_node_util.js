@@ -1,9 +1,32 @@
+export const RB_RED = 1;
+export const RB_BLACK = 0;
 /**
  * 是否是根节点
  * @param {*} x
  */
 export const is_root = (x) => {
   return !x.parent;
+};
+/**
+ * 是否是黑节点，外部节点也视作黑节点
+ * @param {*} p
+ */
+export const is_black = (p) => {
+  return !p || RB_BLACK === p.color;
+};
+export const is_red = (p) => {
+  return !is_black(p);
+};
+/**
+ * 红黑树高度更新条件
+ * @param {*} x
+ */
+export const black_height_updated = (x) => {
+  if (x.lc.height === x.rc.height) {
+    const height = is_red(x) ? x.lc.height : x.lc.height + 1;
+    return x.height === height;
+  }
+  return false;
 };
 /**
  * 是否是父节点的左子节点
@@ -80,7 +103,14 @@ export const uncle = (x) => {
  * @param {*} x
  */
 export const from_parent_to = (x) => {
-  return is_root(x) ? x : is_left_child(x) ? x.parent.lc : x.parent.rc;
+  if (is_root(x)) {
+    return x;
+  } else {
+    if (is_left_child(x)) {
+      return x.parent.lc;
+    }
+    return x.parent.rc;
+  }
 };
 /**
  * 先序遍历迭代版1

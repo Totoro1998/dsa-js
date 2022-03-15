@@ -7,9 +7,11 @@ export default class binary_search_tree extends bin_tree {
     super();
   }
   /**
-   *
-   * @param {*} a
-   * @param {*} b
+   * 按照“3+4”结构链接三个节点及其四棵子树，返回重组之后的局部子树根节点位置
+   * 子树根节点与上层节点之间的双向链接，均须由上层调用者完成
+   * 可用于AVL和红黑树的局部平衡调整
+   * @param {*} g
+   * @param {*} p
    * @param {*} c
    * @param {*} T0
    * @param {*} T1
@@ -45,26 +47,33 @@ export default class binary_search_tree extends bin_tree {
   /**
    * BST节点旋转变换统一算法（3节点 + 4子树），返回调整之后局部子树根节点的位置
    * 注意：尽管子树根会正确指向上层节点（如果存在），但反向的联接须由上层函数完成
+   * v为非空孙辈节点
    * @param {*} v
    */
   rotate_at(v) {
     const p = v.parent;
     const g = p.parent;
+    //zig
     if (is_left_child(p)) {
+      //zig-zig
       if (is_left_child(v)) {
         p.parent = g.parent;
         return this.connect34(v, p, g, v.lc, v.rc, p.rc, g.rc);
       } else {
+        //zig-zag  先zag然后zig
         v.parent = g.parent;
-        return connect34(p, v, g, p.lc, v.lc, v.rc, g.rc);
+        return this.connect34(p, v, g, p.lc, v.lc, v.rc, g.rc);
       }
     } else {
+      //zag
       if (is_right_child(v)) {
+        //zag-zag
         p.parent = g.parent;
-        return connect34(g, p, v, g.lc, p.lc, v.lc, v.rc);
+        return this.connect34(g, p, v, g.lc, p.lc, v.lc, v.rc);
       } else {
+        //zag-zig  先zig然后zag
         v.parent = g.parent; //向上联接
-        return connect34(g, v, p, g.lc, v.lc, v.rc, p.rc);
+        return this.connect34(g, v, p, g.lc, v.lc, v.rc, p.rc);
       }
     }
   }

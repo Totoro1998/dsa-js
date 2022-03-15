@@ -18,7 +18,7 @@ export default class alv_tree extends binary_search_tree {
       //一旦发现g失衡，则（采用“3 + 4”算法）使之复衡，并将子树重新接入原树
       if (!avl_balanced(g)) {
         from_parent_to(g) = this.rotate_at(this.taller_child(this.taller_child(g)));
-        break;//局部子树复衡后，高度必然复原；其祖先亦必如此，故调整结束
+        break; //局部子树复衡后，高度必然复原；其祖先亦必如此，故调整结束
       } else {
         update_height(g);
       }
@@ -46,14 +46,14 @@ export default class alv_tree extends binary_search_tree {
    * 在左、右孩子中取更高者
    * @param {*} x
    */
-    taller_child(x) {
+  taller_child(x) {
     //左高
     if (x.lc.height > x.rc.height) {
       return x.lc;
-    //右高
+      //右高
     } else if (x.lc.height < x.rc.height) {
       return x.rc;
-    //等高，与父亲x同侧优先
+      //等高，与父亲x同侧优先
     } else {
       if (is_left_child(x)) {
         return x.lc;

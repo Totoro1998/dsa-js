@@ -6,6 +6,20 @@ export default class red_black_tree extends binary_search_tree {
   constructor() {
     super();
   }
+  /**
+   * 更新高度
+   * @param {*} x 
+   */
+  update_height(x) {
+    //此处的height已不再是指常规的树高，而是红黑树的黑高度
+    x.height = Math.max(x.lc.height, x.rc.height);//孩子一般黑高度相等，除非出现双黑
+    return is_black(x) ? x.height++ : x.height;//若当前节点为黑，则计入黑深度
+  }
+  /**
+   * 因新节点的引入，而导致父子节点同为红色的此类情况称为双红
+   * 双红修正
+   * @param {*} x 
+   */
   solve_double_red(x) {
     if (is_root(x)) {
       this.root.color = RB_BLACK;
@@ -39,6 +53,10 @@ export default class red_black_tree extends binary_search_tree {
       this.solve_double_red(g);
     }
   }
+  /**
+   * 双黑修正
+   * @param {*} r 
+   */
   solve_double_black(r) {
     let p = r ? r.parent : this.hot;
     if (!p) {
@@ -58,14 +76,14 @@ export default class red_black_tree extends binary_search_tree {
         let b = from_parent_to(p) = this.rotate_at(t)
         if (has_left_child(b)) {
           b.lc.color = RB_BLACK;
-          update_height(b.lc);
+          this.update_height(b.lc);
         }
         if (has_right_child(b)) {
           b.rc.color = RB_BLACK;
-          update_height(b.rc);
+         this. update_height(b.rc);
         }
         b.color = old_color;
-        update_height(b);
+        this.update_height(b);
       } else {
         s.color = RB_RED;
         s.height--;
@@ -90,6 +108,7 @@ export default class red_black_tree extends binary_search_tree {
     if (x) {
       return x;
     }
+    //创建红节点x：以_hot为父，黑高度-1
     x = new bin_node(e, this.hot, null, null, 0);
     this.size++;
     let x_old = x;
@@ -107,7 +126,7 @@ export default class red_black_tree extends binary_search_tree {
     }
     if (!this.hot) {
       this.root.color = RB_BLACK;
-      update_height(this.root);
+      this.update_height(this.root);
       return true;
     }
     if (black_height_updated(this.hot)) {

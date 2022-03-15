@@ -330,16 +330,16 @@ export const update_height = (x) => {
   x.height = Math.max(x.lc.height, x.rc.height) + 1;
   return x.height;
 };
-const height_updated = (x) => {
+export const height_updated = (x) => {
   return x.height === Math.max(x.lc.height, x.rc.height) + 1;
 };
-const balanced = (x) => {
+export const balanced = (x) => {
   return x.lc.height === x.rc.height;
 };
-const bal_fac = (x) => {
+export const bal_fac = (x) => {
   return x.lc.height - x.rc.height;
 };
-const avl_balanced = (x) => {
+export const avl_balanced = (x) => {
   const bal_diff = bal_fac(x);
   return -2 < bal_diff && bal_diff < 2;
 };

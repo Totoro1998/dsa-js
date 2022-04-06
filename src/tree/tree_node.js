@@ -1,13 +1,13 @@
-import { trav_in1, has_left_child, is_right_child } from './bin_node_util.js';
+import { trav_in1, has_left_child, is_right_child, RB_RED } from './bin_node_util.js';
 import vector from '../vector/vector.js';
 export class bin_node {
-  data = undefined; // 数值
-  parent = undefined; // 父节点
-  lc = undefined; // 左孩子
-  rc = undefined; // 右孩子
-  height = undefined; // 高度
-  npl = undefined; // Null Path Length（左式堆，空节点通路长度）
-  color = undefined; // 颜色（红黑树）
+  data; // 数值
+  parent; // 父节点
+  lc; // 左孩子
+  rc; // 右孩子
+  height; // 高度
+  npl; // Null Path Length（左式堆，空节点通路长度）
+  color; // 颜色（红黑树）
   /**
    * 构造函数
    * @param {*} data
@@ -18,8 +18,17 @@ export class bin_node {
    * @param {*} npl
    * @param {*} color
    */
-  constructor(data, parent, lc, rc, height, npl, color) {
-    this.data = data;
+  constructor(e, parent, lc, rc, height, npl, color) {
+    if (!npl) {
+      npl = 1;
+    }
+    if (!height) {
+      height = 0;
+    }
+    if (!color) {
+      color = RB_RED;
+    }
+    this.data = e;
     this.parent = parent;
     this.lc = lc;
     this.rc = rc;
@@ -169,20 +178,25 @@ export class bin_node {
     return l_child;
   }
 }
+/**
+ * B树节点模版类
+ * 每一个超级节点包含n个节点和n+1个分支
+ */
 export class bt_node {
-  parent;
-  key;
-  child;
+  parent; //父节点
+  key; //关键码向量
+  child; //分支，孩子向量，其长度总比key多1
   constructor(e, lc = null, rc = null) {
     this.key = new vector();
     this.child = new vector();
     this.parent = null;
     if (!e) {
-      this.child.insert(0, null);
+      this.child.insert_at(0, null);
     } else {
-      this.key.insert(0, e);
-      this.child.insert(0, lc);
-      this.child.insert(1, rc);
+      //只有一个关键码以及两个孩子
+      this.key.insert_at(0, e);
+      this.child.insert_at(0, lc);
+      this.child.insert_at(1, rc);
       if (lc) {
         lc.parent = this;
       }

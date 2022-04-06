@@ -1,5 +1,6 @@
 import { binSearch, fibSearch } from '../utils/search.js';
 import { get_random_number } from '../utils/number.js';
+import pq_compl_heap from '../pq/pq_compl_heap.js';
 const DEFAULT_CAPACITY = 3;
 export default class vector {
   size; //规模
@@ -20,7 +21,7 @@ export default class vector {
       if (!hi) {
         hi = arr.length;
       }
-      this.#copyFrom(arr, lo, hi);
+      this.copy_from(arr, lo, hi);
     }
   }
   /**
@@ -36,7 +37,7 @@ export default class vector {
   /**
    * 复制数组区间A[lo, hi)
    */
-  #copyFrom(arr, lo, hi) {
+  copy_from(arr, lo, hi) {
     this.capacity = 2 * (hi - lo); //分配空间
     this.elem = [];
     for (this.size = 0; lo < hi; this.size++, lo++) {
@@ -212,8 +213,11 @@ export default class vector {
   /**
    * 堆排序
    */
-  #heapSort(lo, hi) {
-    this.#bubbleSort(lo, hi);
+  heap_sort(lo, hi) {
+    const h = pq_compl_heap(elem, lo, hi);
+    while (!h.empty()) {
+      this.elem[--hi] = h.del_max();
+    }
   }
   /**
    * 轴点构造算法
@@ -274,7 +278,7 @@ export default class vector {
       case 1:
         return fibSearch(this.elem, e, lo, hi);
       case 2:
-        return fibSearch(this.elem, e, lo, hi);
+        return binSearch(this.elem, e, lo, hi);
     }
   }
   /**
@@ -343,7 +347,7 @@ export default class vector {
         this.#quickSort(lo, hi);
         break;
       case 5:
-        this.#heapSort(lo, hi);
+        this.heap_sort(lo, hi);
         break;
       default:
         this.#shellSort(lo, hi);

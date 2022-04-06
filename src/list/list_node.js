@@ -13,7 +13,7 @@ export default class list_node {
   insert_as_pred(e) {
     const node = new list_node(e, this.pred, this);
     if (this.pred) {
-      this.pre.succ = node;
+      this.pred.succ = node;
     }
     this.pred = node;
     return node;
@@ -24,7 +24,7 @@ export default class list_node {
   insert_as_succ(e) {
     const node = new list_node(e, this, this.succ);
     if (this.succ) {
-      this.succ.pre = node;
+      this.succ.pred = node;
     }
     this.succ = node;
     return node;

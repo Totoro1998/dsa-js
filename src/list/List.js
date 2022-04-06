@@ -122,7 +122,7 @@ export default class list {
    * 将e当作首节点插入
    * @param {*} e
    */
-  insert_as_fisrt(e) {
+  insert_as_first(e) {
     this.size++;
     return this.header.insert_as_succ(e);
   }

@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.npmmirror.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+
 prettier@^2.5.1:
   version "2.5.1"
   resolved "https://registry.npmmirror.com/prettier/download/prettier-2.5.1.tgz#fff75fa9d519c54cf0fce328c1017d94546bc56a"

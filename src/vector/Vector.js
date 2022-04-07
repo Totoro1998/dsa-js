@@ -1,6 +1,6 @@
 import { binSearch, fibSearch } from '../utils/search.js';
 import { get_random_number } from '../utils/number.js';
-import pq_compl_heap from '../pq/pq_compl_heap.js';
+// import pq_compl_heap from '../pq/pq_compl_heap.js';
 const DEFAULT_CAPACITY = 3;
 export default class vector {
   size; //规模
@@ -214,10 +214,10 @@ export default class vector {
    * 堆排序
    */
   heap_sort(lo, hi) {
-    const h = pq_compl_heap(elem, lo, hi);
-    while (!h.empty()) {
-      this.elem[--hi] = h.del_max();
-    }
+    // const h = pq_compl_heap(elem, lo, hi);
+    // while (!h.empty()) {
+    //   this.elem[--hi] = h.del_max();
+    // }
   }
   /**
    * 轴点构造算法

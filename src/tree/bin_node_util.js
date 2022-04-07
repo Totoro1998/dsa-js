@@ -170,7 +170,7 @@ export const trav_in1 = (x, visit) => {
  * @param {*} e
  * @param {*} visit
  */
-export const trav_in2 = (e, visit) => {
+export const trav_in2 = (x, visit) => {
   const s = [];
   while (true) {
     if (x) {
@@ -190,7 +190,7 @@ export const trav_in2 = (e, visit) => {
  * @param {*} e
  * @param {*} visit
  */
-export const trav_in3 = (e, visit) => {
+export const trav_in3 = (x, visit) => {
   let back_track = false; //前一步是否刚从右子树回溯
   while (true) {
     //若有左子树且不是刚刚回溯
@@ -213,23 +213,11 @@ export const trav_in3 = (e, visit) => {
   }
 };
 /**
- * 中序遍历迭代版4
- * @param {*} e
- * @param {*} visit
- */
-export const trav_in4 = (e, visit) => {};
-/**
- * 中序遍历迭代版5
- * @param {*} e
- * @param {*} visit
- */
-export const trav_in5 = (e, visit) => {};
-/**
  * 后序遍历迭代版
  * @param {*} x
  * @param {*} visit
  */
-export const trav_post = (x, visit) => {
+export const trav_post1 = (x, visit) => {
   const s = [];
   if (x) {
     s.push(x);
@@ -278,9 +266,9 @@ export const trav_in_r = (x, visit) => {
   if (!x) {
     return;
   }
-  trav_post_r(x.lc, visit);
+  trav_in_r(x.lc, visit);
   visit(x.data);
-  trav_post_r(x.rc, visit);
+  trav_in_r(x.rc, visit);
 };
 /**
  * 从当前节点出发，沿左分支不断深入，直至没有左分之的节点，沿途节点遇到后立即访问
@@ -327,11 +315,19 @@ const goto_hlvfl = (s) => {
  * 更新节点x的高度
  */
 export const update_height = (x) => {
-  x.height = Math.max(x.lc.height, x.rc.height) + 1;
+  let lc_height = 0;
+  let rc_height = 0;
+  if (x.lc) {
+    lc.height = x.lc.height;
+  }
+  if (x.rc) {
+    rc_height = x.rc.height;
+  }
+  x.height = Math.max(lc_height, rc_height) + 1;
   return x.height;
 };
 export const height_updated = (x) => {
-  return x.height === Math.max(x.lc.height, x.rc.height) + 1;
+  return x.height === Math.max(x.lc.height || 0, x.rc.height || 0) + 1;
 };
 export const balanced = (x) => {
   return x.lc.height === x.rc.height;

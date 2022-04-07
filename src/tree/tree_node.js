@@ -1,5 +1,20 @@
-import { trav_in1, has_left_child, is_right_child, RB_RED } from './bin_node_util.js';
+import {
+  trav_in1,
+  trav_in2,
+  trav_in3,
+  trav_in_r,
+  trav_pre1,
+  trav_pre2,
+  trav_pre_r,
+  trav_post1,
+  trav_post_r,
+  has_left_child,
+  is_right_child,
+  RB_RED,
+} from './bin_node_util.js';
 import vector from '../vector/vector.js';
+import { get_random_number } from '../utils/number.js';
+
 export class bin_node {
   data; // 数值
   parent; // 父节点
@@ -45,7 +60,7 @@ export class bin_node {
    * @param {*} e
    */
   insert_as_lc(e) {
-    this.lc = new BindNode(e, this);
+    this.lc = new bin_node(e, this);
     return this.lc;
   }
   /**
@@ -53,7 +68,7 @@ export class bin_node {
    * @param {*} e
    */
   insert_as_rc(e) {
-    this.rc = new BindNode(e, this);
+    this.rc = new bin_node(e, this);
     return this.rc;
   }
   /**
@@ -97,34 +112,50 @@ export class bin_node {
    * 子树先序遍历
    * @param {*} visit
    */
-  trav_pre(visit) {}
+  trav_pre(visit) {
+    switch (get_random_number(1, 3)) {
+      case 1:
+        trav_pre1(this, visit);
+        break;
+      case 1:
+        trav_pre2(this, visit);
+        break;
+      default:
+        trav_post_r(visit);
+    }
+  }
   /**
    * 子树中序遍历
    * @param {*} visit
    */
   trav_in(visit) {
-    switch (get_random_number(1, 5)) {
+    switch (get_random_number(1, 4)) {
       case 1:
-        trav_in1(this, visit);
+        trav_in_r(this, visit);
         break;
       case 2:
-        trav_in2(this, visit);
+        trav_in_r(this, visit);
         break;
       case 3:
-        trav_in3(this, visit);
-        break;
-      case 4:
-        trav_in4(this, visit);
+        trav_in_r(this, visit);
         break;
       default:
-        trav_in5(this, visit);
+        trav_in_r(this, visit);
     }
   }
   /**
    * 子树后序遍历
    * @param {*} visit
    */
-  trav_post(visit) {}
+  trav_post(visit) {
+    switch (get_random_number(1, 2)) {
+      case 1:
+        trav_post1(this, visit);
+        break;
+      default:
+        trav_post_r(visit);
+    }
+  }
   /**
    * 逆时针旋转
    */

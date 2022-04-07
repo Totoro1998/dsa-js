@@ -113,7 +113,7 @@ export default class binary_search_tree extends bin_tree {
     if (!x) {
       return false;
     }
-    this.remove_at(x, this.hot);
+    this.remove_at(x);
     this.size--;
     this.update_height_above(x);
     return x;
@@ -124,7 +124,7 @@ export default class binary_search_tree extends bin_tree {
    * @param {*} x
    * @param {*} hot
    */
-  remove_at(x, hot) {
+  remove_at(x) {
     const w = x; //实际被删除的节点
     const succ = null; //实际被删除节点的接替者
     /**
@@ -139,15 +139,15 @@ export default class binary_search_tree extends bin_tree {
     } else {
       //若左右子树均存在，则选择x的直接后继作为实际被摘除节点
       w = w.succ();
-      [x.data, w.data] = [w.data, x.data]; //交换数据
-      succ = w.rc; //只可能是右节点，因为w是直接后继
+      [x.data, w.data] = [w.data, x.data]; //交换数据，其它的并没有进行更改
       const u = w.parent;
+      succ = w.rc; //只可能是右节点，因为w是直接后继
       //若恰好u是x(经过交换的),succ为空
       u.data === x.data ? (u.rc = succ) : (u.lc = succ); //更新w的父节点
     }
-    hot = w.parent; //记录实际被删除节点的父亲
+    this.hot = w.parent; //记录实际被删除节点的父亲
     if (succ) {
-      succ.parent = hot; //将被删除节点的接替者与hot相联
+      succ.parent = this.hot; //将被删除节点的接替者与hot相联
     }
     w.data = null;
     w = null;

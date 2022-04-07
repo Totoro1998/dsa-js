@@ -1,4 +1,4 @@
-import { bin_node } from './tree_node';
+import { bin_node } from './tree_node.js';
 import { update_height } from './bin_node_util.js';
 export default class bin_tree {
   size;
@@ -15,7 +15,7 @@ export default class bin_tree {
   }
   constructor() {
     this.size = 0;
-    this.root = undefined;
+    this.root = null;
   }
   /**
    *规模

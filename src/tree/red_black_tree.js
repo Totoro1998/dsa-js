@@ -26,6 +26,7 @@ export default class red_black_tree extends binary_search_tree {
       this.root.height++;
       return;
     }
+    //否则x的父亲必然存在
     const p = x.parent;
     if (is_black(p)) {
       return;
@@ -50,7 +51,7 @@ export default class red_black_tree extends binary_search_tree {
       if (!is_root(g)) {
         g.color = RB_RED;
       }
-      this.solve_double_red(g);
+      solve_double_red(g);
     }
   }
   /**
@@ -108,11 +109,13 @@ export default class red_black_tree extends binary_search_tree {
     if (x) {
       return x;
     }
-    //创建红节点x：以_hot为父，黑高度-1
+    //创建红节点x：以hot为父，黑高度-1
     x = new bin_node(e, this.hot, null, null, 0);
     this.size++;
     let x_old = x;
-    solve_double_red(x);
+
+    console.log(x)
+    this.solve_double_red(x);
     return x_old;
   }
   remove(e) {
@@ -120,18 +123,22 @@ export default class red_black_tree extends binary_search_tree {
     if (!x) {
       return false;
     }
-    const r = this.remove_at(x, this.hot);
+    const r = this.remove_at(x);
     if (!--this.size) {
       return true;
     }
+    //若刚删除的节点是根节点，则将其置黑，并更新黑高度
     if (!this.hot) {
       this.root.color = RB_BLACK;
       this.update_height(this.root);
       return true;
     }
+    //以下，原x必非根，hot必非空
+    //若所有祖先的黑深度依然平衡，则无需调整
     if (black_height_updated(this.hot)) {
       return true;
     }
+    //否则，若r为红，则只需要令其转黑
     if (is_red(r)) {
       r.color = RB_BLACK;
       r.height++;

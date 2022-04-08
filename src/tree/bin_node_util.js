@@ -1,5 +1,9 @@
 export const RB_RED = 1;
 export const RB_BLACK = 0;
+//空树高度为-1
+export const get_height = (p) => {
+  return p ? p.height : -1;
+};
 /**
  * 是否是根节点
  * @param {*} x
@@ -22,8 +26,8 @@ export const is_red = (p) => {
  * @param {*} x
  */
 export const black_height_updated = (x) => {
-  if (x.lc.height === x.rc.height) {
-    const height = is_red(x) ? x.lc.height : x.lc.height + 1;
+  if (get_height(x.lc) === get_height(x.rc)) {
+    const height = is_red(x) ? get_height(x.lc) : get_height(x.lc) + 1;
     return x.height === height;
   }
   return false;
@@ -315,25 +319,17 @@ const goto_hlvfl = (s) => {
  * 更新节点x的高度
  */
 export const update_height = (x) => {
-  let lc_height = 0;
-  let rc_height = 0;
-  if (x.lc) {
-    lc.height = x.lc.height;
-  }
-  if (x.rc) {
-    rc_height = x.rc.height;
-  }
-  x.height = Math.max(lc_height, rc_height) + 1;
+  x.height = Math.max(get_height(x.lc), get_height(x.rc)) + 1;
   return x.height;
 };
 export const height_updated = (x) => {
-  return x.height === Math.max(x.lc.height || 0, x.rc.height || 0) + 1;
+  return x.height === Math.max(get_height(x.lc), get_height(x.rc)) + 1;
 };
 export const balanced = (x) => {
-  return x.lc.height === x.rc.height;
+  return get_height(x.lc) === get_height(x.rc);
 };
 export const bal_fac = (x) => {
-  return x.lc.height - x.rc.height;
+  return get_height(x.lc) - get_height(x.rc);
 };
 export const avl_balanced = (x) => {
   const bal_diff = bal_fac(x);

@@ -1,5 +1,5 @@
 import { bin_node } from './tree_node.js';
-import { update_height } from './bin_node_util.js';
+import { update_height, from_parent_to } from './bin_node_util.js';
 export default class bin_tree {
   size;
   root;
@@ -32,7 +32,7 @@ export default class bin_tree {
   /**
    * 树根
    */
-  root() {
+  get_root() {
     return this.root;
   }
   /**
@@ -50,6 +50,9 @@ export default class bin_tree {
    * @param {*} e
    */
   insert_as_lc(x, e) {
+    if (x.lc) {
+      return;
+    }
     this.size++;
     x.insert_as_lc(e);
     this.update_height_above(x);
@@ -61,6 +64,9 @@ export default class bin_tree {
    * @param {*} e
    */
   insert_as_rc(x, e) {
+    if (x.rc) {
+      return;
+    }
     this.size++;
     x.insert_as_rc(e);
     this.update_height_above(x);
@@ -72,13 +78,16 @@ export default class bin_tree {
    * @param {*} t
    */
   attach_as_lc(x, s) {
+    if (x.lc) {
+      return;
+    }
     x.lc = s.root;
     x.lc.parent = x;
     this.size += s.len();
     this.update_height_above(x);
-    s.root = undefined;
+    s.root = null;
     s.size = 0;
-    s = undefined;
+    s = null;
     return x;
   }
   /**
@@ -91,9 +100,9 @@ export default class bin_tree {
     x.rc.parent = x;
     this.size += s.len();
     this.update_height_above(x);
-    s.root = undefined;
+    s.root = null;
     s.size = 0;
-    s = undefined;
+    s = null;
     return x;
   }
   /**
@@ -101,36 +110,38 @@ export default class bin_tree {
    * @param {*} x
    */
   remove(x) {
-    from_parent_to(x) = undefined;
+    let from_parent = from_parent_to(x);
+    from_parent = null;
     this.update_height_above(x.parent);
-    const n = remove_at(x);
+    const n = this.remove_at(x);
     this.size -= n;
     return n;
   }
   /**
    * 删除二叉树中位置x处的节点及其后代，返回被删除节点的总数
-   * @param {*} x 
+   * @param {*} x
    */
   remove_at(x) {
     if (!x) {
-      return 0
+      return 0;
     }
-    let n = 1 + remove_at(x.lc) + remove_at(x.rc)
-    x.data = undefined;
+    let n = 1 + this.remove_at(x.lc) + this.remove_at(x.rc);
+    x.data = null;
     x = null;
-    return n
+    return n;
   }
   /**
    * 将子树x从当前树中摘除，并将其转换为一棵独立子树
    * @param {*} x
    */
   secede(x) {
-    from_parent_to(x) = undefined; //切断来自父节点的引用
+    let from_parent = from_parent_to(x);
+    from_parent = null; //切断来自父节点的引用
     this.update_height_above(x.parent);
-    const s = new bin_tree()
+    const s = new bin_tree();
     s.root = x;
     s.size = x.len();
-    x.parent = undefined;
+    x.parent = null;
     this.size -= s.size;
     return s;
   }

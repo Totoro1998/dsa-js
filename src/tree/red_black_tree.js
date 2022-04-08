@@ -1,5 +1,5 @@
 import binary_search_tree from './binary_search_tree.js';
-import { is_root, RB_BLACK, is_black, uncle, from_parent_to, is_red, black_height_updated } from './bin_node_util.js';
+import { is_root, RB_BLACK, is_black, uncle, from_parent_to, is_red, black_height_updated ,get_height} from './bin_node_util.js';
 import { bin_node } from './tree_node.js';
 
 export default class red_black_tree extends binary_search_tree {
@@ -12,7 +12,7 @@ export default class red_black_tree extends binary_search_tree {
    */
   update_height(x) {
     //此处的height已不再是指常规的树高，而是红黑树的黑高度
-    x.height = Math.max(x.lc.height, x.rc.height);//孩子一般黑高度相等，除非出现双黑
+    x.height = Math.max(get_height(x.lc), get_height(x.rc));//孩子一般黑高度相等，除非出现双黑
     return is_black(x) ? x.height++ : x.height;//若当前节点为黑，则计入黑深度
   }
   /**

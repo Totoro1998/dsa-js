@@ -1,6 +1,6 @@
 import binary_search_tree from './binary_search_tree.js';
 import { bin_node } from './tree_node.js';
-import { avl_balanced, from_parent_to, is_left_child, update_height } from './bin_node_util.js';
+import { avl_balanced, from_parent_to, is_left_child, update_height,get_height } from './bin_node_util.js';
 
 export default class alv_tree extends binary_search_tree {
   constructor() {
@@ -48,10 +48,10 @@ export default class alv_tree extends binary_search_tree {
    */
   taller_child(x) {
     //左高
-    if (x.lc.height > x.rc.height) {
+    if (get_height(x.lc) > get_height(x.rc)) {
       return x.lc;
       //右高
-    } else if (x.lc.height < x.rc.height) {
+    } else if (get_height(x.lc) < get_height(x.rc)) {
       return x.rc;
       //等高，与父亲x同侧优先
     } else {

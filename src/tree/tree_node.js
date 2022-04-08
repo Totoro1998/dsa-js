@@ -33,16 +33,7 @@ export class bin_node {
    * @param {*} npl
    * @param {*} color
    */
-  constructor(e, parent, lc, rc, height, npl, color) {
-    if (!npl) {
-      npl = 1;
-    }
-    if (!height) {
-      height = 0;
-    }
-    if (!color) {
-      color = RB_RED;
-    }
+  constructor(e, parent, lc, rc, height = 0, npl = 1, color = RB_RED) {
     this.data = e;
     this.parent = parent;
     this.lc = lc;
@@ -54,7 +45,12 @@ export class bin_node {
   /**
    * 统计当前节点的后代总数
    */
-  size() {}
+  len() {
+    let s = 1; //计入本身
+    if (this.lc) s += this.lc.len(); //递归计入左子树规模
+    if (this.rc) s += this.rc.len(); //递归计入右子树规模
+    return s;
+  }
   /**
    * 作为当前节点的左孩子插入
    * @param {*} e
@@ -171,13 +167,13 @@ export class bin_node {
     }
     r_child.lc = this;
     this.parent = r_child;
-    this.height = 1 + Math.max(this.lc.height, this.rc.height);
-    r_child.height = 1 + Math.max(r_child.lc.height, r_child.rc.height);
+    this.height = 1 + Math.max(get_height(this.lc), get_height(this.rc));
+    r_child.height = 1 + Math.max(get_height(r_child.lc), get_height(r_child.rc));
     for (let x = r_child.parent; x; x.parent) {
-      if (x.height === Math.max(x.lc.height, x.rc.height) + 1) {
+      if (x.height === Math.max(get_height(x.lc), get_height(x.rc)) + 1) {
         break;
       } else {
-        x.height = Math.max(x.lc.height, x.rc.height) + 1;
+        x.height = Math.max(get_height(x.lc), get_height(x.rc)) + 1;
       }
     }
     return r_child;
@@ -197,13 +193,13 @@ export class bin_node {
     }
     l_child.rc = this;
     this.parent = l_child;
-    this.height = Math.max(this.lc.height, this.rc.height) + 1;
-    l_child.height = Math.max(l_child.lc.height.l_child.rc.height) + 1;
+    this.height = Math.max(get_height(this.lc), get_height(this.rc)) + 1;
+    l_child.height = Math.max(get_height(l_child.lc), get_height(l_child.rc)) + 1;
     for (let x = l_child.parent; x; x = x.parent) {
-      if (x.height === Math.max(x.lc.height, x.rc.height) + 1) {
+      if (x.height === Math.max(get_height(x.lc), get_height(x.rc)) + 1) {
         break;
       } else {
-        x.height = Math.max(x.lc.height, x.rc.height) + 1;
+        x.height = Math.max(get_height(x.lc), get_height(x.rc)) + 1;
       }
     }
     return l_child;

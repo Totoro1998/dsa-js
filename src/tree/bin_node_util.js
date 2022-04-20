@@ -108,12 +108,12 @@ export const uncle = (x) => {
  */
 export const from_parent_to = (x) => {
   if (is_root(x)) {
-    return x;
+    return [x, ''];
   } else {
     if (is_left_child(x)) {
-      return x.parent.lc;
+      return [x.parent, 'lc'];
     }
-    return x.parent.rc;
+    return [x.parent, 'rc'];
   }
 };
 /**

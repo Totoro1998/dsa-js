@@ -110,8 +110,12 @@ export default class bin_tree {
    * @param {*} x
    */
   remove(x) {
-    let from_parent = from_parent_to(x);
-    from_parent = null;
+    let [parent, dir] = from_parent_to(x);
+    if (dir) {
+      parent[dir] = null;
+    } else {
+      parent = null;
+    }
     this.update_height_above(x.parent);
     const n = this.remove_at(x);
     this.size -= n;
@@ -135,8 +139,12 @@ export default class bin_tree {
    * @param {*} x
    */
   secede(x) {
-    let from_parent = from_parent_to(x);
-    from_parent = null; //切断来自父节点的引用
+    let [parent, dir] = from_parent_to(x);
+    if (dir) {
+      parent[dir] = null;
+    } else {
+      parent = null;
+    }
     this.update_height_above(x.parent);
     const s = new bin_tree();
     s.root = x;

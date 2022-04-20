@@ -4,6 +4,9 @@ export const RB_BLACK = 0;
 export const get_height = (p) => {
   return p ? p.height : -1;
 };
+export const get_data = (x) => {
+  return x ? x.data : null;
+};
 /**
  * 是否是根节点
  * @param {*} x
@@ -37,21 +40,21 @@ export const black_height_updated = (x) => {
  * @param {*} x
  */
 export const is_left_child = (x) => {
-  return !is_root && x.data === x.parent.lc.data;
+  return !is_root(x) && get_data(x) === get_data(x.parent.lc);
 };
 /**
  * 是否是父节点的右子节点
  * @param {*} x
  */
 export const is_right_child = (x) => {
-  return !is_root && x.data === x.parent.rc.data;
+  return !is_root(x) && get_data(x) === get_data(x.parent.rc);
 };
 /**
  * 是否有父节点
  * @param {*} x
  */
 export const has_parent = (x) => {
-  return !is_root;
+  return !is_root(x);
 };
 /**
  * 是否有左子节点
@@ -128,7 +131,7 @@ export const trav_pre1 = (x, visit) => {
   }
   while (s.length > 0) {
     x = s.pop();
-    visit(x.data);
+    visit(get_data(x));
     if (has_right_child(x)) {
       s.push(x.rc);
     }
@@ -165,7 +168,7 @@ export const trav_in1 = (x, visit) => {
       break;
     }
     x = s.pop();
-    visit(x.data);
+    visit(get_data(x));
     x = x.rc;
   }
 };
@@ -182,7 +185,7 @@ export const trav_in2 = (x, visit) => {
       x = x.lc;
     } else if (s.length !== 0) {
       x = s.pop(); //尚未访问的最低祖先节点退栈
-      visit(x.data);
+      visit(get_data(x));
       x = x.rc; //遍历祖先的右子树
     } else {
       break;
@@ -201,7 +204,7 @@ export const trav_in3 = (x, visit) => {
     if (!back_track && has_left_child(x)) {
       x = x.lc;
     } else {
-      visit(x.data);
+      visit(get_data(x));
       //若右子树非空，深入右子树继续遍历
       if (has_right_child(x)) {
         x = x.rc;
@@ -232,7 +235,7 @@ export const trav_post1 = (x, visit) => {
       goto_hlvfl(s); //在以其右兄为根子树中，找到HLVFL
     }
     x = s.pop();
-    visit(x.data);
+    visit(get_data(x));
   }
 };
 /**
@@ -244,7 +247,7 @@ export const trav_pre_r = (x, visit) => {
   if (!x) {
     return;
   }
-  visit(x.data);
+  visit(get_data(x));
   trav_pre_r(x.lc, visit);
   trav_pre_r(x.rc, visit);
 };
@@ -259,7 +262,7 @@ export const trav_post_r = (x, visit) => {
   }
   trav_post_r(x.lc, visit);
   trav_post_r(x.rc, visit);
-  visit(x.data);
+  visit(get_data(x));
 };
 /**
  * 中序遍历递归版
@@ -271,7 +274,7 @@ export const trav_in_r = (x, visit) => {
     return;
   }
   trav_in_r(x.lc, visit);
-  visit(x.data);
+  visit(get_data(x));
   trav_in_r(x.rc, visit);
 };
 /**
@@ -282,7 +285,7 @@ export const trav_in_r = (x, visit) => {
  */
 const visit_along_left_branch = (x, visit, s) => {
   while (x) {
-    visit(x.data);
+    visit(get_data(x));
     s.push(x.rc);
     x = x.lc;
   }
@@ -325,12 +328,15 @@ export const update_height = (x) => {
 export const height_updated = (x) => {
   return x.height === Math.max(get_height(x.lc), get_height(x.rc)) + 1;
 };
+//理想平衡条件
 export const balanced = (x) => {
   return get_height(x.lc) === get_height(x.rc);
 };
+//平衡因子
 export const bal_fac = (x) => {
   return get_height(x.lc) - get_height(x.rc);
 };
+//avl平衡条件
 export const avl_balanced = (x) => {
   const bal_diff = bal_fac(x);
   return -2 < bal_diff && bal_diff < 2;

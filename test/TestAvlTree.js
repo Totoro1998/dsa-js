@@ -1,0 +1,13 @@
+import avl_tree from '../src/tree/avl_tree.js';
+const tree = new avl_tree();
+tree.insert(2);
+tree.insert(8);
+tree.insert(5);
+tree.insert(9);
+tree.insert(10);
+tree.insert(11);
+tree.insert(16);
+tree.insert(13);
+tree.insert(19);
+tree.remove(10);
+// tree.trav_in((x) => console.log(x));

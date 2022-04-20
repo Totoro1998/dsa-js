@@ -1,6 +1,14 @@
 import { bin_node } from './tree_node.js';
 import bin_tree from './bin_tree.js';
-import { is_left_child, has_left_child, has_right_child, update_height, from_parent_to } from './bin_node_util.js';
+import {
+  is_left_child,
+  has_left_child,
+  has_right_child,
+  update_height,
+  from_parent_to,
+  is_right_child,
+  get_data,
+} from './bin_node_util.js';
 export default class binary_search_tree extends bin_tree {
   hot; //命中的节点的父亲
   constructor() {
@@ -9,7 +17,7 @@ export default class binary_search_tree extends bin_tree {
   /**
    * 按照“3+4”结构链接三个节点及其四棵子树，返回重组之后的局部子树根节点位置
    * 子树根节点与上层节点之间的双向链接，均须由上层调用者完成
-   * 可用于AVL和红黑树的局部平衡调整
+   * 可用于AVL和红黑树的局部平衡调整,返回b
    * @param {*} g
    * @param {*} p
    * @param {*} c
@@ -59,10 +67,12 @@ export default class binary_search_tree extends bin_tree {
       //zig-zig
       if (is_left_child(v)) {
         p.parent = g.parent;
+        //返回p
         return this.connect34(v, p, g, v.lc, v.rc, p.rc, g.rc);
       } else {
         //zig-zag  先zag然后zig
         v.parent = g.parent;
+        //返回v
         return this.connect34(p, v, g, p.lc, v.lc, v.rc, g.rc);
       }
     } else {
@@ -84,14 +94,14 @@ export default class binary_search_tree extends bin_tree {
    * @param {*} e
    */
   search(e) {
-    if (!this.root || e === this.root.data) {
+    if (!this.root || e === get_data(this.root)) {
       this.hot = null;
       return this.root;
     }
     this.hot = this.root;
     while (true) {
-      const v = e < this.hot.data ? this.hot.lc : this.hot.rc;
-      if (!v || e === v.data) {
+      const v = e < get_data(this.hot) ? this.hot.lc : this.hot.rc;
+      if (!v || e === get_data(v)) {
         return v;
       }
       this.hot = v;
@@ -107,7 +117,7 @@ export default class binary_search_tree extends bin_tree {
     if (!this.hot) {
       this.root = x;
     } else {
-      if (e < this.hot.data) {
+      if (e < get_data(this.hot)) {
         this.hot.lc = x;
       } else {
         this.hot.rc = x;
@@ -145,14 +155,14 @@ export default class binary_search_tree extends bin_tree {
       if (dir) {
         parent[dir] = x.rc;
       } else {
-        parent = x.rc;
+        this.root = x.rc;
       }
       succ = x.rc;
     } else if (!has_right_child(x)) {
       if (dir) {
         parent[dir] = x.lc;
       } else {
-        parent = x.lc;
+        this.root = x.lc;
       }
       succ = x.lc;
     } else {
@@ -162,7 +172,7 @@ export default class binary_search_tree extends bin_tree {
       [x.data, w.data] = [w.data, x.data]; //交换数据，其它的并没有进行更改
       //若恰好u是x(经过交换的),succ为空
       succ = w.rc; //只可能是右节点，因为w是直接后继
-      u.data === x.data ? (u.rc = succ) : (u.lc = succ); //更新w的父节点
+      get_data(u) === get_data(x) ? (u.rc = succ) : (u.lc = succ); //更新w的父节点
     }
     this.hot = w.parent; //记录实际被删除节点的父亲
     if (succ) {
@@ -190,7 +200,7 @@ export default class binary_search_tree extends bin_tree {
     while (x.lc) {
       x = x.lc;
     }
-    for (; x.data !== p.data; x = x.parent) {
+    for (; get_data(x) !== get_data(p); x = x.parent) {
       while (x.rc) {
         x.zag();
         c++;

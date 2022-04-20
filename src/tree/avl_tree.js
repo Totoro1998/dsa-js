@@ -1,6 +1,6 @@
 import binary_search_tree from './binary_search_tree.js';
 import { bin_node } from './tree_node.js';
-import { avl_balanced, from_parent_to, is_left_child, update_height,get_height } from './bin_node_util.js';
+import { avl_balanced, from_parent_to, is_left_child, update_height, get_height } from './bin_node_util.js';
 
 export default class alv_tree extends binary_search_tree {
   constructor() {
@@ -11,13 +11,27 @@ export default class alv_tree extends binary_search_tree {
     if (x) {
       return x;
     }
-    const xx = new bin_node(x, this.hot);
+    const xx = new bin_node(e, this.hot);
+    if (!this.hot) {
+      this.root = xx;
+    } else {
+      if (e < this.hot.data) {
+        this.hot.lc = xx;
+      } else {
+        this.hot.rc = xx;
+      }
+    }
     this.size++;
-    //从x之父出发向上，逐层检查各代祖先g
+    //x的父亲hot若增高，则其祖父有可能失衡。从x之父出发向上，逐层检查各代祖先g
     for (let g = this.hot; g; g = g.parent) {
       //一旦发现g失衡，则（采用“3 + 4”算法）使之复衡，并将子树重新接入原树
       if (!avl_balanced(g)) {
-        from_parent_to(g) = this.rotate_at(this.taller_child(this.taller_child(g)));
+        let [g_parent, dir] = from_parent_to(g);
+        if (dir) {
+          g_parent[dir] = this.rotate_at(this.taller_child(this.taller_child(g)));
+        } else {
+          this.root = this.rotate_at(this.taller_child(this.taller_child(g)));
+        }
         break; //局部子树复衡后，高度必然复原；其祖先亦必如此，故调整结束
       } else {
         update_height(g);
@@ -31,11 +45,16 @@ export default class alv_tree extends binary_search_tree {
     this.remove_at(x, this.hot);
     this.size--;
     //从hot出发向上，逐层检查各代祖先g
-    for (let g = this.hot; this.g; g = g.parent) {
+    for (let g = this.hot; g; g = g.parent) {
       //一旦发现g失衡，则（采用“3 + 4”算法）使之复衡，并将该子树联至原父亲
       if (!avl_balanced(g)) {
         const origin_parent = this.rotate_at(this.taller_child(this.taller_child(g)));
-        from_parent_to(g) = origin_parent;
+        const [parent, dir] = from_parent_to(g);
+        if (dir) {
+          parent[dir] = origin_parent;
+        } else {
+          this.root = origin_parent;
+        }
         g = origin_parent;
       }
       update_height(g);

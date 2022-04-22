@@ -1,10 +1,7 @@
 import { binSearch, fibSearch } from '../utils/search.js';
 import { get_random_number } from '../utils/number.js';
-// import pq_compl_heap from '../pq/pq_compl_heap.js';
 const DEFAULT_CAPACITY = 3;
 export default class vector {
-  size; //规模
-  capacity; //容量
   elem; //数据区
   /**
    * 构造函数
@@ -14,8 +11,6 @@ export default class vector {
    */
   constructor(arr, lo = 0, hi) {
     if (!arr) {
-      this.capacity = DEFAULT_CAPACITY;
-      this.size = 0;
       this.elem = [];
     } else {
       if (!hi) {
@@ -29,66 +24,31 @@ export default class vector {
    * @param {*} c
    * @param {*} s
    */
-  static create_vector_by_graph(c = DEFAULT_CAPACITY, s = 0, v) {
-    this.capacity = c;
-    this.elem = new Array(this.capacity);
-    for (this.size = 0; this.size < s; this.elem[this.size++] = v);
+  static create_vector_by_graph(s = 0, v) {
+    this.elem = [];
+    for (i = 0; i < s; this.elem[i++] = v);
   }
   /**
    * 复制数组区间A[lo, hi)
    */
   copy_from(arr, lo, hi) {
-    this.capacity = 2 * (hi - lo); //分配空间
     this.elem = [];
-    for (this.size = 0; lo < hi; this.size++, lo++) {
-      this.elem[this.size] = arr[lo];
+    for (let i = 0; lo < hi; i++, lo++) {
+      this.elem[i] = arr[lo];
     }
-  }
-  /**
-   * 空间不足扩容
-   */
-  expand() {
-    if (this.size < this.capacity) {
-      return;
-    }
-    if (this.capacity < DEFAULT_CAPACITY) {
-      this.capacity = DEFAULT_CAPACITY;
-    }
-    this.capacity = this.capacity * 2;
-    let old_elem = this.elem;
-    this.elem = new Array(this.capacity);
-    for (let i = 0; i < this.size; i++) {
-      this.elem[i] = old_elem[i];
-    }
-    old_elem = null;
   }
   get_elem() {
-    const return_elem = [];
-    for (let i = 0; i < this.len(); i++) {
-      if (this.elem[i]) {
-        return_elem[i] = this.elem[i];
-      }
-    }
-    return return_elem;
+    // const return_elem = [];
+    // for (let i = 0; i < this.len(); i++) {
+    //   if (this.elem[i]) {
+    //     return_elem[i] = this.elem[i];
+    //   }
+    // }
+    // return return_elem;
+    return this.elem;
   }
-  /**
-   * 装填因子过小时压缩
-   */
-  #shrink() {
-    //不致收缩到DEFAULT_CAPACITY以下
-    if (this.capacity < DEFAULT_CAPACITY / 2) {
-      return;
-    }
-    //以25%为界
-    if (this.size * 4 < this.capacity) {
-      return;
-    }
-    let oldElem = this.elem;
-    this.capacity = this.capacity / 2; //容量减半
-    for (let i = 0; i < this.size; i++) {
-      this.elem = oldElem[i];
-    }
-    oldElem = undefined;
+  get_item(index) {
+    return this.elem[index];
   }
   /**
    * 扫描交换
@@ -97,7 +57,7 @@ export default class vector {
   /**
    * 起泡排序算法
    */
-  #bubbleSort(lo = 0, hi = this.size) {
+  #bubbleSort(lo = 0, hi = this.len()) {
     const bubbleSortA = () => {
       while (lo < --hi) {
         for (let i = lo; i < hi; i++) {
@@ -239,7 +199,7 @@ export default class vector {
    * 规模
    */
   len() {
-    return this.size;
+    return this.elem.length;
   }
   /**
    * 前后倒置
@@ -260,20 +220,20 @@ export default class vector {
    * 判空
    */
   empty() {
-    return !this.size;
+    return !this.len();
   }
   /**
    * 无序向量区间查找
    * 返回最后一个元素e的位置；失败时，返回lo - 1
    */
-  find(e, lo = 0, hi = this.size) {
+  find(e, lo = 0, hi = this.len()) {
     while (lo < hi-- && e !== this.elem[hi]);
     return hi;
   }
   /**
    * 有序向量区间查找
    */
-  search(e, lo = 0, hi = this.size) {
+  search(e, lo = 0, hi = this.len()) {
     switch (get_random_number(1, 2)) {
       case 1:
         return fibSearch(this.elem, e, lo, hi);
@@ -295,15 +255,14 @@ export default class vector {
    * @param {*} lo
    * @param {*} hi
    */
-  remove_by_range(lo = 0, hi = this.size) {
+  remove_by_range(lo = 0, hi = this.len()) {
     if (lo === hi) {
       return 0;
     }
-    while (hi < this.size) {
+    while (hi < this.len()) {
       this.elem[lo++] = this.elem[hi++];
     }
-    this.size = lo;
-    this.#shrink();
+    this.elem.length = lo;
     return hi - lo;
   }
   /**
@@ -312,12 +271,11 @@ export default class vector {
    * @param {*} e
    */
   insert_at(r, e) {
-    this.expand();
-    for (let i = this.size; i > r; i--) {
+    // this.expand();
+    for (let i = this.len(); i > r; i--) {
       this.elem[i] = this.elem[i - 1]; //顺次后移一个单元
     }
     this.elem[r] = e;
-    this.size++; //置入新元素并更新容量
     return r;
   }
   /**
@@ -325,14 +283,14 @@ export default class vector {
    * @param {*} e
    */
   insert(e) {
-    return this.insert_at(this.size, e);
+    return this.insert_at(this.len(), e);
   }
   /**
    * 对[lo, hi)排序
    * @param {*} lo
    * @param {*} hi
    */
-  sort(lo = 0, hi = this.size) {
+  sort(lo = 0, hi = this.len()) {
     switch (get_random_number(1, 6)) {
       case 1:
         this.#bubbleSort(lo, hi);
@@ -359,7 +317,7 @@ export default class vector {
    * @param {*} lo
    * @param {*} hi
    */
-  unsort(lo = 0, hi = this.size) {
+  unsort(lo = 0, hi = this.len()) {
     while (lo < hi--) {
       const randomIndex = get_random_number(lo, hi - 1);
       [this.elem[hi], this.elem[randomIndex]] = [this.elem[randomIndex], this.elem[hi]];
@@ -373,11 +331,11 @@ export default class vector {
      * 繁琐版
      */
     const deduplicateA = () => {
-      let old_size = this.size;
+      let old_size = this.len();
       let i = -1;
-      while (++i < this.size - 1) {
+      while (++i < this.len() - 1) {
         let j = i + 1;
-        while (j < this.size) {
+        while (j < this.len()) {
           if ((this.elem[i] = this.elem[j])) {
             this.remove_by_index(j); //若雷同删除后者
           } else {
@@ -385,22 +343,22 @@ export default class vector {
           }
         }
       }
-      return old_size - this.size;
+      return old_size - this.len();
     };
     /**
      * 高效版本
      */
     const deduplicateB = () => {
-      let old_size = this.size;
+      let old_size = this.len();
       let i = 1;
-      while (i < this.size) {
+      while (i < this.len()) {
         if (this.find(this.elem[i], 0, i) < 0) {
           i++;
         } else {
           this.remove_by_index(i);
         }
       }
-      return old_size - this.size;
+      return old_size - this.len();
     };
     switch (get_random_number(1, 2)) {
       case 1:
@@ -417,12 +375,12 @@ export default class vector {
      * 低效版
      */
     const uniquifyA = () => {
-      let oldSize = this.size;
+      let oldSize = this.len();
       let i = 1;
-      while (i < this.size) {
+      while (i < this.len()) {
         this.elem[i - 1] === this.elem[i] ? remove(i) : i++; //若雷同，则删除后者；否则，转至后一元素
       }
-      return oldSize - this.size;
+      return oldSize - this.len();
     };
     /**
      * 高效版
@@ -431,14 +389,12 @@ export default class vector {
       //各对互异“相邻”元素的秩
       let i = 0; //用于改变this.size
       let j = 0; //用于循环查找和数量
-      while (++j < this.size) {
+      while (++j < this.len()) {
         //跳过雷同者
         if (this.elem[i] !== this.elem[j]) {
           this.elem[++i] = this.elem[j]; //发现不同元素时，向前移至紧邻于前者右侧
         }
       }
-      this.size = i++;
-      this.#shrink();
       return j - i;
     };
     switch (get_random_number(1, 2)) {
@@ -453,7 +409,7 @@ export default class vector {
    * @param {*} visit
    */
   traverse(visit) {
-    for (let i = 0; i < this.size; i++) {
+    for (let i = 0; i < this.len(); i++) {
       visit(this.elem[i]);
     }
   }

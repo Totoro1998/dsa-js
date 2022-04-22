@@ -213,10 +213,16 @@ export class bt_node {
   parent; //父节点
   key; //关键码向量
   child; //分支，孩子向量，其长度总比key多1
+  /**
+   * BTNode只能作为根节点创建，而且创建时有0个关键码和1个空孩子指针
+   * @param {*} e
+   * @param {*} lc
+   * @param {*} rc
+   */
   constructor(e, lc = null, rc = null) {
+    this.parent = null;
     this.key = new vector();
     this.child = new vector();
-    this.parent = null;
     if (!e) {
       this.child.insert_at(0, null);
     } else {

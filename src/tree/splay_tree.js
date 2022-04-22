@@ -1,6 +1,13 @@
 import binary_search_tree from './binary_search_tree.js';
 import { bin_node } from './tree_node.js';
-import { is_left_child, is_right_child, update_height, has_right_child } from './bin_node_util.js';
+import {
+  is_left_child,
+  is_right_child,
+  update_height,
+  has_right_child,
+  get_data,
+  has_left_child,
+} from './bin_node_util.js';
 
 export default class splay_tree extends binary_search_tree {
   constructor() {
@@ -30,7 +37,7 @@ export default class splay_tree extends binary_search_tree {
   }
   /**
    * 将节点v伸展至根
-   * v为因最近访问而需伸展的节点位置
+   * v为最近访问而需伸展的节点位置
    * @param {*} v
    */
   splay(v) {
@@ -40,8 +47,11 @@ export default class splay_tree extends binary_search_tree {
     let p, g;
     while (true) {
       p = v.parent;
+      if (!p) {
+        break;
+      }
       g = p.parent;
-      if (!(p && g)) {
+      if (!g) {
         break;
       }
       let gg = g.parent; //每轮之后v都以原曾祖父为父
@@ -76,13 +86,13 @@ export default class splay_tree extends binary_search_tree {
         //若v原先的曾祖父不存在，则v现在应为树根
         v.parent = null;
       } else {
-        //否则gg此后应该以v作为做孩子或者右孩子
-        g.data === gg.lc.data ? this.attach_as_lc(v, gg) : this.attach_as_rc(gg, v);
+        //否则gg此后应该以v作为左孩子或者右孩子
+        get_data(g) === get_data(gg.lc) ? this.attach_as_lc(v, gg) : this.attach_as_rc(gg, v);
       }
       update_height(g);
       update_height(p);
       update_height(v);
-    }
+    } //双局伸展结束时，必有g === NULL，但p可能非空
     p = v.parent;
     if (p) {
       //若p果真非空，则额外做一次但旋转
@@ -110,6 +120,7 @@ export default class splay_tree extends binary_search_tree {
       this.root = new bin_node(e);
       return this.root;
     }
+    //树根节点要么等于查找目标（查找成功），要么就是hot，而且恰为拟插入节点的直接前驱或直接后继（查找失败）。
     if (e === this.search(e).data) {
       return this.root;
     }
@@ -139,8 +150,9 @@ export default class splay_tree extends binary_search_tree {
     if (!this.root || e !== this.search(e).data) {
       return false;
     }
-    const w = this.root;
-    if (has_left_child(this.root)) {
+    let w = this.root;
+    //若无左子树，则直接删除
+    if (!has_left_child(this.root)) {
       this.root = this.root.rc;
       if (this.root) {
         this.root.parent = null;

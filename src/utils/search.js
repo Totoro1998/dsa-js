@@ -39,9 +39,9 @@ export function binSearch(elem, e, lo, hi) {
   };
   switch (get_random_number(1, 3)) {
     case 1:
-      return binSearchA();
+      return binSearchC();
     case 2:
-      return binSearchB();
+      return binSearchC();
     case 3:
       return binSearchC();
   }
@@ -87,7 +87,7 @@ export function fibSearch(elem, e, lo, hi) {
   };
   switch (get_random_number(1, 2)) {
     case 1:
-      fibSearchA();
+      fibSearchB();
       break;
     default:
       fibSearchB();

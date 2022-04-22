@@ -127,7 +127,7 @@ export class graph_matrix extends graph {
       this.E[j].insert(new vector(this.n, this.n, undefined)); //各顶点预留一条潜在的关联边
     }
     this.n++;
-    this.E.insert(vector.create_vector_by_graph(this.n, this.n, undefined)); //创建新顶点对应的边变量
+    this.E.insert(vector.create_vector_by_graph(this.n, undefined)); //创建新顶点对应的边变量
     return this.V.insert(new vertex(v));
   }
   /**

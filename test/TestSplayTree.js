@@ -1,0 +1,12 @@
+import splay_tree from '../src/tree/splay_tree.js';
+const tree = new splay_tree();
+tree.insert(23);
+tree.insert(22);
+tree.insert(24);
+tree.insert(25);
+tree.insert(1);
+tree.insert(4);
+tree.insert(3);
+tree.remove(22);
+tree.trav_in((x) => console.log(x));
+console.log(tree.search(23));

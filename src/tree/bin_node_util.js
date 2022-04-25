@@ -1,5 +1,5 @@
-export const RB_RED = 1;
 export const RB_BLACK = 0;
+export const RB_RED = 1;
 //空树高度为-1
 export const get_height = (p) => {
   return p ? p.height : -1;
@@ -25,7 +25,12 @@ export const is_red = (p) => {
   return !is_black(p);
 };
 /**
- * 红黑树高度更新条件
+ * 在从任一节点通往其任一后代外部节点的沿途，黑节点的总数亦必相等。除去（黑色）外部节点，沿途所经黑节点的总数称作该节点的黑高度
+ * 节点黑高度需要更新的情况共分三种：
+ * 或者左、右孩子的黑高度不等；
+ * 或者作为红节点，黑高度与其孩子不相等；
+ * 或者作为黑节点，黑高度不等于孩子的黑高度加一。
+ * 红黑树高度更新条件（黑高度）
  * @param {*} x
  */
 export const black_height_updated = (x) => {

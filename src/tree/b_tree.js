@@ -61,6 +61,7 @@ export default class b_tree {
    * @param {*} v
    */
   solve_underflow(v) {
+    //在m阶B-树中，刚发生下溢的节点V必恰好包含(m/2)-2个关键码和(m/2) - 1个分支
     if (v.child.len() >= (this.order + 1) >> 1) {
       return;
     }
@@ -82,13 +83,14 @@ export default class b_tree {
     while (p.child.get_item(r) !== v) {
       r++;
     }
-    //向左兄弟借关键码
+    //节点V的左兄弟L存在，且至少包含m/2个关键码，向左兄弟借关键码
     if (0 < r) {
       let ls = p.child.get_item(r - 1);
       if ((this.order + 1) >> 1 < ls.child.len()) {
         v.key.insert_at(0, p.key.get_item(r - 1));
-        const p_child_elem = p.key.get_elem();
-        p_child_elem[r - 1] = ls.key.remove_by_index(ls.key.len() - 1);
+        const p_key_elem = p.key.get_elem();
+        p_key_elem[r - 1] = ls.key.remove_by_index(ls.key.len() - 1);
+        //同时ls的最右侧孩子过继给v，作为v的最左侧孩子
         v.child.insert_at(0, ls.child.remove_by_index(ls.child.len() - 1));
         if (v.child.get_item(0)) {
           const v_child_elem = v.child.get_elem();
@@ -97,7 +99,7 @@ export default class b_tree {
         return;
       }
     }
-    //向右兄弟借关键码
+    //节点V的右兄弟R存在，且至少包含m/2个关键码，向右兄弟借关键码
     //若v不是p的最后一个孩子，则右兄弟必存在
     if (p.child.len() - 1 > r) {
       let rs = p.child.get_item(r + 1);
@@ -116,14 +118,17 @@ export default class b_tree {
     //左右兄弟要么为空（但不可能同时），要么都太瘦-------合并
     //与左兄弟合并
     if (0 < r) {
-      let ls = p.child.get_item(r - 1);
+      let ls = p.child.get_item(r - 1); //左兄弟必然存在
+      //p的第r - 1个关键码转入ls，v不再是p的第r个孩子
       ls.key.insert_at(ls.key.len(), p.key.remove_by_index(r - 1));
       p.child.remove_by_index(r);
+      //v的最左侧孩子过继给ls做最右侧孩子
       ls.child.insert_at(ls.child.len(), v.child.remove_by_index(0));
       if (ls.child.get_item(ls.child.len() - 1)) {
         const ls_child_elem = ls.child.get_elem();
         ls_child_elem[ls.child.len() - 1].parent = ls;
       }
+      //v剩余的关键码和孩子，依次转入ls
       while (!v.key.empty()) {
         ls.key.insert_at(ls.key.len(), v.key.remove_by_index(0));
         ls.child.insert_at(ls.child.len(), v.child.remove_by_index(0));
@@ -153,7 +158,7 @@ export default class b_tree {
       }
       v = null;
     }
-    solve_underflow(p);
+    this.solve_underflow(p);
     return;
   }
   /**
@@ -210,13 +215,13 @@ export default class b_tree {
     return true;
   }
   remove(e) {
-    const v = this.search(e);
+    let v = this.search(e);
     if (!v) {
       return false;
     }
     //确定目标关键码在节点v中秩
     let r = v.key.search(e);
-    //若v非叶子，则e的后继必属于某叶节点
+    //若v非叶子，则e的后继必属于某叶节点，找到直接后继
     if (v.child.get_item(0)) {
       let u = v.child.get_item(r + 1); //在右子树一直向左，即可
       while (u.child.get_item(0)) {
@@ -231,7 +236,7 @@ export default class b_tree {
     v.key.remove_by_index(r);
     v.child.remove_by_index(r + 1);
     this.size--;
-    solve_underflow(v); //如有需要，需做选择或合并
+    this.solve_underflow(v); //如有需要，需做选择或合并
     return true;
   }
 }

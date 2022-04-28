@@ -71,11 +71,16 @@ export default class red_black_tree extends binary_search_tree {
       if (!is_root(g)) {
         g.color = RB_RED;
       }
-      solve_double_red(g);
+      this.solve_double_red(g);
     }
   }
   /**
-   * 双黑修正
+   * 双黑修正，解决节点x和被其替代的节点均为黑色的问题
+   *分为三大类共四种情况：
+    BB-1 ： 2次颜色翻转， 2次黑高度更新， 1~2次旋转，不再递归
+    BB-2R： 2次颜色翻转， 2次黑高度更新， 0次旋转，不再递归
+    BB-2B： 1次颜色翻转， 1次黑高度更新， 0次旋转，需要递归
+    BB-3 ： 2次颜色翻转， 2次黑高度更新， 1次旋转，转为BB-1或BB2R
    * @param {*} r
    */
   solve_double_black(r) {
@@ -83,46 +88,59 @@ export default class red_black_tree extends binary_search_tree {
     if (!p) {
       return;
     }
-    let s = r.data === p.lc.data ? p.rc : p.lc;
+    let s = get_data(r) === get_data(p.lc) ? p.rc : p.lc;
     if (is_black(s)) {
-      let t = null;
+      let t = null; //s的红孩子（若左、右孩子都为红，左者优先；均为黑时为null）
       if (is_red(s.rc)) {
         t = s.rc;
       }
       if (is_red(s.lc)) {
         t = s.lc;
       }
+      // BB-1，若黑s有红孩子
       if (t) {
-        const old_color = p.color;
-        let [parent, dir] = from_parent_to(x);
-        if (has_left_child(b)) {
+        const old_color = p.color; //备份原子树 根节点p的颜色
+        //对t及其父亲，祖父进行旋转重平衡，并将新子树的左右孩子
+        let [parent, dir] = from_parent_to(p);
+        parent[dir] = this.rotate_at(t);
+        //左子
+        if (has_left_child(parent[dir])) {
           parent[dir].lc.color = RB_BLACK;
           this.update_height(parent[dir].lc);
         }
+        //右子
         if (has_right_child(parent[dir])) {
           parent[dir].rc.color = RB_BLACK;
           this.update_height(parent[dir].rc);
         }
+        //新子树 树根节点继承原来根节点的颜色
         parent[dir].color = old_color;
         this.update_height(parent[dir]);
       } else {
+        //黑s无红孩子
         s.color = RB_RED;
         s.height--;
+        //BB-2R
         if (is_red(p)) {
           p.color = RB_BLACK;
         } else {
+          //BB-2B
           p.height--;
-          solve_double_black(p);
+          //下层下溢引发上层下溢
+          this.solve_double_black(p);
         }
       }
     } else {
-      s.color = RB_BLACK;
-      p.color = RB_RED;
-      let t = is_left_child(s) ? s.lc : s.rc;
+      // 兄弟s为红，BB-3
+      s.color = RB_BLACK; //s转黑
+      p.color = RB_RED; //p转红
+      let t = is_left_child(s) ? s.lc : s.rc; //取t与其父同侧
       this.hot = p;
+      //对t及其父亲、祖父做平衡调整
       const [parent, dir] = from_parent_to(p);
       parent[dir] = this.rotate_at(t);
-      solve_double_black(r);
+      //继续修正r处双黑，此时的p已经转红，故后续只能是BB-1或者BB-2R
+      this.solve_double_black(r);
     }
   }
   insert(e) {
@@ -151,10 +169,12 @@ export default class red_black_tree extends binary_search_tree {
     if (!x) {
       return false;
     }
+    //x为实际摘除者，其父亲为p = this.hot，其接替者为r,而r的兄弟为外部节点w= null
     const r = this.remove_at(x);
     if (!--this.size) {
       return true;
     }
+    //this.hot的某一几点刚删除，且被r所指节点（可能是null）接替
     //若刚删除的节点是根节点，则将其置黑，并更新黑高度
     if (!this.hot) {
       this.root.color = RB_BLACK;
@@ -172,7 +192,9 @@ export default class red_black_tree extends binary_search_tree {
       r.height++;
       return true;
     }
-    solve_double_black(r);
+    //被删除节点x及其替代者r同为黑色的此类情况，称作“双黑” （double black）
+    //经双黑调整后返回
+    this.solve_double_black(r);
     return true;
   }
 }

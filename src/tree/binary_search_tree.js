@@ -62,7 +62,7 @@ export default class binary_search_tree extends bin_tree {
   rotate_at(v) {
     const p = v.parent;
     const g = p.parent;
-    //zig
+    //zig (顺时针)
     if (is_left_child(p)) {
       //zig-zig
       if (is_left_child(v)) {
@@ -76,7 +76,7 @@ export default class binary_search_tree extends bin_tree {
         return this.connect34(p, v, g, p.lc, v.lc, v.rc, g.rc);
       }
     } else {
-      //zag
+      //zag （逆时针）
       if (is_right_child(v)) {
         //zag-zag
         p.parent = g.parent;

@@ -26,7 +26,7 @@ export default class vector {
    */
   static create_vector_by_graph(s = 0, v) {
     this.elem = [];
-    for (i = 0; i < s; this.elem[i++] = v);
+    for (let i = 0; i < s; this.elem[i++] = v);
   }
   /**
    * 复制数组区间A[lo, hi)
@@ -38,13 +38,6 @@ export default class vector {
     }
   }
   get_elem() {
-    // const return_elem = [];
-    // for (let i = 0; i < this.len(); i++) {
-    //   if (this.elem[i]) {
-    //     return_elem[i] = this.elem[i];
-    //   }
-    // }
-    // return return_elem;
     return this.elem;
   }
   get_item(index) {

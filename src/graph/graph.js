@@ -6,15 +6,17 @@ export default class graph {
    * 所有顶点、边的辅助信息复位
    */
   reset() {
-      for (let i = 0; i < this.n; i++) {
-          this.status(i) = vertex_status.UNDISCOVERED;
-          this.d_time(i) = -1;
-          this.f_time(i) = -1;
-          this.parent(i) = -1;
-          this.priority(i) = Math.Infinity
+    for (let i = 0; i < this.n; i++) {
+          const v_item = this.get_v_item(i);
+          v_item.status = vertex_status.UNDISCOVERED;
+          v_item.d_time = -1;  
+          v_item.f_time = -1;
+          v_item.parent = -1;
+          v_item.priority = Math.Infinity;
           for (let j = 0; j < this.n; j++){
               if (this.exists(i, j)) {
-                  this.type(i,j) = edge_type.UNDETERMINED
+                const e_item = this.get_e_item(i, j);
+                e_item.type = edge_type.UNDETERMINED
               }
           }
     }
@@ -83,7 +85,7 @@ export default class graph {
     this.reset();
     let clock = 0;
     let v = s;
-    const S = [];
+    const S = [];//用栈记录排序顶点
     while (true) {
       if (vertex_status.UNDISCOVERED === this.status(v)) {
         if (!this.TSort(v, clock, S)) {
@@ -207,6 +209,9 @@ export default class graph {
    * 顶点v的状态
    * @param {*} i
    */
+  get_v_item(i) {
+    
+  }
   status(i) {}
   /**
    *顶点v的时间标签dTime
@@ -247,7 +252,13 @@ export default class graph {
    * @param {*} v
    * @param {*} u
    */
-  remove(v, u) {}
+  remove(v, u) { }
+  /**
+   * 获取i和j的边
+   * @param {*} i 
+   * @param {*} j 
+   */
+  get_e_item(i,j){}
   /**
    * 边(v, u)的类型
    * @param {*} i
@@ -266,33 +277,38 @@ export default class graph {
    */
   weight(v, u) {}
   /**
-   * 广度优先搜索BFS算法（单个连通域），
-   * 遍历结束后，所有访问过的顶点通过parent[]指针依次联接，从整体上给出了原图某一连通或可达域的一棵遍历树，称作广度优先搜索树
+   * 广度优先搜索BFS算法（单个连通域），仿照树的层次遍历
+   * 遍历结束后，所有访问过的顶点通过parent指针依次联接，从整体上给出了原图某一连通或可达域的一棵遍历树，称作广度优先搜索树
    * @param {*} v 
    * @param {*} clock 
    */
   BFS(v, clock) {
-    const Q = [];
-    this.status(v) = vertex_status.DISCOVERED;// 节点被发现
+    const Q = [];//引入辅助队列
+    const v_item = this.get_v_item(v)
+    v_item.status = vertex_status.DISCOVERED;// 节点被发现
     Q.push(v);
     while (Q.length !== 0) {
       let v = Q.unshift(); // 取出队首顶点v
-      this.d_time(v) = ++clock;
+      const v_item = this.get_v_item(v)
+      v_item.d_time = ++clock;
       //枚举v的所有邻居u
       for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)){
         // 若u尚未被发现
         if (vertex_status.UNDISCOVERED === this.status(u)) {
-          this.status(u) = vertex_status.DISCOVERED;
+          const u_v_item = this.get_v_item(u)
+          u_v_item.status = vertex_status.DISCOVERED;//则u被发现
           Q.push(u);
-          this.type(v, u) = edge_type.TREE; // 每次发现这样的一个顶点u，都意味着遍历树可从v到u扩展一条边
-          this.parent(u) = v; // 引入树边扩展支撑树。按照遍历树中的承袭关系，将v记作为u的父节点。
+          const v_u_e_item = this.get_e_item(v,u)
+          v_u_e_item.type = edge_type.TREE; // 每次发现这样的一个顶点u，都意味着遍历树可从v到u扩展一条边
+          u_v_item.parent = v; // 引入树边扩展支撑树。按照遍历树中的承袭关系，将v记作为u的父节点。
         } else {
           // 若顶点u已处于DISCOVERED状态（无向图），或者甚至处于VISITED状态（有向图） ，则意味着边(v, u)不属于遍历树，于是将该边归类为跨边（cross edge）
-          this.type(v,u) = edge_type.CROSS
+          const v_u_e_item = this.get_e_item(v,u)
+          v_u_e_item.type = edge_type.CROSS
         }
       }
       // 至此，当前节点访问完毕
-      this.status(v) = vertex_status.VISITED
+      v_item.status = vertex_status.VISITED
     }
   }
   /**
@@ -301,34 +317,38 @@ export default class graph {
    * @param {*} clock 
    */
   DFS(v, clock) {
-    this.d_time(v) = ++clock;
-    this.status(v) = vertex_status.DISCOVERED;
+    const v_item = this.get_v_item(v)
+    v_item.d_time = ++clock;
+    v_item.status = vertex_status.DISCOVERED;
     // 枚举v的所有邻居
     for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)){
+      const v_u_e_item = this.get_e_item(v, u)
+      const u_item = this.get_v_item(u)
+      const v_item = this.get_v_item(v)
       switch (this.status(u)) {
         //u尚未发现，意味着支撑树可以在此扩展
         case vertex_status.UNDISCOVERED:
-          this.type(v, u) = edge_type.TREE
-          this.parent(u) = v;
+          v_u_e_item.type = edge_type.TREE
+          u_item.parent = v;
           this.DFS(u, clock);
           break;
         //若顶点u处于DISCOVERED状态，则意味着在此处发现一个有向环路。此时在DFS遍历树中u必为v的祖先，故应将边(v,u)归类为后向边
         case vertex_status.DISCOVERED:
-          this.type(v, u) = edge_type.BACKWARD;
+          v_u_e_item.type = edge_type.BACKWARD;
           break;
         //u已访问完毕(VISITED，有向图)，则视承袭关系分为前向边或跨边
         default:
           // 用于判定DFS树中v是否u的祖先
-          this.type(v, u) = (this.d_time(v) < this.d_time(u)) ? edge_type.FORWARD : edge_type.CROSS;
+          v_u_e_item.type= v_item.d_time < u_item.d_time ? edge_type.FORWARD : edge_type.CROSS;
           break;
       }
     }
-    this.status(v) = vertex_status.VISITED;
+    v_item.status = vertex_status.VISITED;
     /**
      * 这里为每个顶点v都记录了被发现的和访问完成的时刻， 对应的时间区间[d_time(v),f_time(v)]均称作v的活跃期（active duration）。
      * 实际上，任意顶点v和u之间是否存在祖先/后代的“血缘” 关系，完全取决于二者的活跃期是否相互包含。
      */
-    this.f_time(v) = ++clock;
+    v_item.f_time = ++clock;
   }
   /**
    * 基于DFS的拓扑排序算法(单趟)
@@ -336,27 +356,35 @@ export default class graph {
    * @param {*} clock 
    * @param {*} S 
    */
-  TSort(v,clock,S) {
-    this.d_time(v) = ++clock;
-    this.status(v) = vertex_status.DISCOVERED;
+  TSort(v, clock, S) {
+    const v_item = this.get_v_item(v)
+    v_item.d_time = ++clock;
+    v_item.status = vertex_status.DISCOVERED;
     for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)){
+      const u_item = this.get_v_item(u);
+      const v_u_e_item = this.get_e_item(v, u)
+      const v_item = this.get_v_item(v)
       switch (this.status(u)) {
         case vertex_status.UNDISCOVERED:
-          this.parent(u) = v;
-          this.type(v, u) = edge_type.TREE;
+          u_item.parent = v;
+          v_u_e_item.type = edge_type.TREE;
           //若u及其后代都不能进行拓扑排序（则全图亦必如此）
           if (!TSort(u, clock, S)) {
             return false;
           }
           break;
         case vertex_status.DISCOVERED:
-          this.type(v, u) = edge_type.BACKWARD;
+          //一旦収现后向边（非DAG），则不必深入，故返回并报告
+          v_u_e_item.type = edge_type.BACKWARD;
           return false;
         default:
-          this.type(v, u) = this.d_time(v) < this.d_time(u) ? edge_type.FORWARD : edge_type.CROSS;
+          v_u_e_item.type = v_item.d_time < u_item.d_time ? edge_type.FORWARD : edge_type.CROSS;
           break;
       }
     }
+    v_item.status = vertex_status.VISITED;
+    S.push(new vertex(v));
+    return true;
   }
   /**
    * 拓扑排序（单个）

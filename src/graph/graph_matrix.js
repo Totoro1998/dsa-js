@@ -45,6 +45,13 @@ export class graph_matrix extends graph {
     this.e = 0;
   }
   /**
+   * 获取V第i个元素
+   * @param {*} i
+   */
+  get_v_item(i) {
+    return this.V[i];
+  }
+  /**
    * 查询第i个顶点的数据
    * @param {*} i
    */
@@ -73,7 +80,6 @@ export class graph_matrix extends graph {
     return this.next_nbr(i, this.n);
   }
   /**
-   * 对于任意顶点i，如何枚举其所有的邻接节点
    * 相对于顶点j的下一邻接顶点（改用邻接表可提高效率）
    * @param {*} i
    * @param {*} j
@@ -119,15 +125,16 @@ export class graph_matrix extends graph {
     return this.V[i].priority;
   }
   /**
+   * 顶点的动态操作
    * 插入顶点，返回编号
    * @param {*} v
    */
   insert_vertex(v) {
     for (let j = 0; j < this.n; j++) {
-      this.E[j].insert(new vector(this.n, this.n, undefined)); //各顶点预留一条潜在的关联边
+      this.E[j].insert(null); //各顶点预留一条潜在的关联边
     }
     this.n++;
-    this.E.insert(vector.create_vector_by_graph(this.n, undefined)); //创建新顶点对应的边变量
+    this.E.insert(vector.create_vector_by_graph(this.n, null)); //创建新顶点对应的边变量
     return this.V.insert(new vertex(v));
   }
   /**
@@ -144,7 +151,7 @@ export class graph_matrix extends graph {
     }
     this.E.remove(i); //删除第i行
     this.n--;
-    let v_bak = this.vertex(i);
+    let v_bak_data = this.vertex(i);
     this.V.remove(i); //删除顶点i
     for (let j = 0; j < this.n; j++) {
       let e = this.E[j].remove(i); //删除列
@@ -154,7 +161,7 @@ export class graph_matrix extends graph {
         this.e--;
       }
     }
-    return v_bak;
+    return v_bak_data;
   }
   /**
    * 边的确认操作
@@ -163,6 +170,14 @@ export class graph_matrix extends graph {
    */
   exists(i, j) {
     return 0 <= i && i < this.n && 0 <= j && j < this.n && this.E[i][j];
+  }
+  /**
+   * 获取i和j的边
+   * @param {*} i
+   * @param {*} j
+   */
+  get_e_item(i, j) {
+    return this.E[i][j];
   }
   /**
    * 边(i,j)的类型
@@ -195,7 +210,7 @@ export class graph_matrix extends graph {
    * @param {*} i
    * @param {*} j
    */
-  insert(e, w, i, j) {
+  insert_edge(e, w, i, j) {
     if (this.exists(i, j)) {
       return;
     }
@@ -210,11 +225,11 @@ export class graph_matrix extends graph {
    * @param {*} j
    */
   remove_edge(i, j) {
-    let e_bak = this.edge(i, j);
+    let e_bak_data = this.edge(i, j);
     this.E[i][j] = null;
     this.e--;
     this.V[i].out_degree--;
     this.V[j].in_degree--;
-    return e_bak;
+    return e_bak_data;
   }
 }

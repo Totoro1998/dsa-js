@@ -94,7 +94,7 @@ export class bin_node {
     const q = [];
     q.push(this);
     while (q.length !== 0) {
-      const x = q.unshift();
+      const x = q.shift();
       visit(x.data);
       if (has_left_child(x)) {
         q.push(x.lc);

@@ -1,5 +1,5 @@
 /**
- * 获取min到max的随机数
+ * 获取min到max的随机数 (包括min和max)
  * @param {*} min
  * @param {*} max
  */

@@ -24,7 +24,7 @@ export default class vector {
    * @param {*} c
    * @param {*} s
    */
-  static create_vector_by_graph(s = 0, v) {
+  create_vector_by_graph(s = 0, v) {
     this.elem = [];
     for (let i = 0; i < s; this.elem[i++] = v);
   }

@@ -299,22 +299,21 @@ export default class graph {
     v_item.status = vertex_status.DISCOVERED; // 节点被发现
     Q.push(v);
     while (Q.length !== 0) {
-      let v = Q.unshift(); // 取出队首顶点v
+      let v = Q.shift(); // 取出队首顶点v
       const v_item = this.get_v_item(v);
       v_item.d_time = ++clock;
       //枚举v的所有邻居u
       for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)) {
         // 若u尚未被发现
+        const v_u_e_item = this.get_e_item(v, u);
         if (vertex_status.UNDISCOVERED === this.status(u)) {
           const u_v_item = this.get_v_item(u);
           u_v_item.status = vertex_status.DISCOVERED; //则u被发现
           Q.push(u);
-          const v_u_e_item = this.get_e_item(v, u);
           v_u_e_item.type = edge_type.TREE; // 每次发现这样的一个顶点u，都意味着遍历树可从v到u扩展一条边
           u_v_item.parent = v; // 引入树边扩展支撑树。按照遍历树中的承袭关系，将v记作为u的父节点。
         } else {
           // 若顶点u已处于DISCOVERED状态（无向图），或者甚至处于VISITED状态（有向图） ，则意味着边(v, u)不属于遍历树，于是将该边归类为跨边（cross edge）
-          const v_u_e_item = this.get_e_item(v, u);
           v_u_e_item.type = edge_type.CROSS;
         }
       }

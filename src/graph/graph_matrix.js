@@ -134,7 +134,9 @@ export class graph_matrix extends graph {
       this.E[j].insert(null); //各顶点预留一条潜在的关联边
     }
     this.n++;
-    this.E.insert(vector.create_vector_by_graph(this.n, null)); //创建新顶点对应的边变量
+    const vec = new vector();
+    vec.create_vector_by_graph(this.n, null);
+    this.E.insert(vec); //创建新顶点对应的边变量
     return this.V.insert(new vertex(v));
   }
   /**
@@ -149,12 +151,12 @@ export class graph_matrix extends graph {
         this.e--;
       }
     }
-    this.E.remove(i); //删除第i行
+    this.E.remove_by_index(i); //删除第i行
     this.n--;
     let v_bak_data = this.vertex(i);
-    this.V.remove(i); //删除顶点i
+    this.V.remove_by_index(i); //删除顶点i
     for (let j = 0; j < this.n; j++) {
-      let e = this.E[j].remove(i); //删除列
+      let e = this.E[j].remove_by_index(i); //删除列
       if (e) {
         e = null;
         this.V[j].out_degree--;

@@ -1,4 +1,4 @@
-import {vertex_status,edge_type} from './const.js'
+import { vertex_status, edge_type } from './const.js';
 export default class graph {
   n; //顶点总数
   e; //边总数
@@ -7,167 +7,16 @@ export default class graph {
    */
   reset() {
     for (let i = 0; i < this.n; i++) {
-          const v_item = this.get_v_item(i);
-          v_item.status = vertex_status.UNDISCOVERED;
-          v_item.d_time = -1;  
-          v_item.f_time = -1;
-          v_item.parent = -1;
-          v_item.priority = Math.Infinity;
-          for (let j = 0; j < this.n; j++){
-              if (this.exists(i, j)) {
-                const e_item = this.get_e_item(i, j);
-                e_item.type = edge_type.UNDETERMINED
-              }
-          }
-    }
-  }
-  /**
-   * （连通域）广度优先搜索算法（全图）
-   */
-  bfs(s) {
-    this.reset();
-    let clock = 0;
-    let v = s;
-    //逐一检查所有顶点
-    while (true) {
-      //一旦遇到尚未发现的顶点
-      if (vertex_status.UNDISCOVERED === this.status(v)) {
-        //即从该顶点出发启动一次BFS
-        this.BFS(v,clock);
-      }
-      //按序号检查，先自增然后取余。
-      v = (++v % this.n);
-      if (s === v) {
-        break;
-      }
-    }
-  }
-  /**
-   * （连通域）深度优先搜索算法（全图）
-   */
-  dfs(s) {
-    this.reset();
-    let clock = 0;
-    let v = s;
-    while (true) {
-      if (vertex_status.UNDISCOVERED === this.status(v)) {
-        this.DFS(v, clock);
-      }
-      v = (++v % this.n);
-      if (s === v) {
-        break;
-      }
-    }
-  }
-  /**
-   *（连通域）基于DFS的双连通分量分解算法
-   */
-  bcc(s) {
-    this.reset();
-    let clock = 0;
-    let v = s;
-    const S = [];
-    while (true) {
-      if (vertex_status.UNDISCOVERED === this.status(v)) {
-        this.BCC(v, clock, S);
-        S.pop();
-      }
-      v = (++v % n);
-      if (s === v) {
-        break;
-      }
-    }
-  }
-  /**
-   *（连通域）基于DFS的拓扑排序算法
-   */
-  t_sort(s) {
-    this.reset();
-    let clock = 0;
-    let v = s;
-    const S = [];//用栈记录排序顶点
-    while (true) {
-      if (vertex_status.UNDISCOVERED === this.status(v)) {
-        if (!this.TSort(v, clock, S)) {
-          //任一连通域（亦即整图）非DAG
-          while (S.length !== 0) {
-            S.pop();
-          }
-          break;
-        }
-      }
-      v = (++v % n);
-      if (s === v) {
-        break;
-      }
-    }
-    return S
-  }
-  /**
-   *（连通域）优先级搜索框架(全图)
-   */
-  pfs(s,prioUpdater) {
-    this.reset();
-    let clock = 0;
-    let v = s;
-    while (true) {
-      if (vertex_status.UNDISCOVERED === this.status(v)) {
-        this.PFS(v,prioUpdater)
-      }
-      v = (++v % n);
-      if (s === v) {
-        break;
-      }
-    }
-  }
-  /**
-   * 最小支撑树Prim算法
-   */
-  prim(s) {
-    this.reset();
-    this.priority(s) = 0;
-    // 共需引入n个顶点和n-1条边
-    for (let i = 0; i < this.n; i++){
-      this.status(s) = vertex_status.VISITED;
-      if (-1 !== this.parent(s)) {
-        this.type(this.parent(s), s) = edge_type.TREE;//引入当前的s
-      }
-      for (let j = this.first_nbr(s); -1 < j; j = this.next_nbr(s, j)){
-        //对邻接节点j做松弛
-        if (this.status(j) === vertex_status.UNDISCOVERED && this.priority(j) > this.weight(s, j)) {
-          this.priority(j) = this.weight(s, j);
-          this.parent(j) = s;
-        }
-      }
-      for (let shortest = Math.Infinity, j = 0; j < this.n; j++){
-        if (this.status(j) === vertex_status.UNDISCOVERED && shortest > this.priority(j)) {
-          shortest = this.priority(j);
-          s = j
-        }
-      }
-    }
-  }
-  /**
-   * 最短路径Dijkstra算法,适用于一般的有向图
-   */
-  dijkstra() {
-    this.reset();
-    this.priority(s) = 0;
-    for (let i = 0; i < this.n; i++){
-      this.status(s) = vertex_status.VISITED;
-      if (-1 !== this.parent(s)) {
-        this.type(this.parent(s), s) = edge_type.TREE;
-      }
-      for (let j = this.first_nbr(s); -1 < j; j = this.next_nbr(s, j)){
-        if (this.status(j) === vertex_status.UNDISCOVERED && this.priority(j) > this.priority(s) + this.weight(s, j)) {
-          this.priority(j) = this.priority(s) + this.weight(s, j);
-          this.parent(j) = s
-        }
-      }
-      for (let shortest = Math.Infinity, j = 0; j < this.n; j++){
-        if (this.status(j) === vertex_status.UNDISCOVERED && shortest > this.priority(j)) {
-          shortest = this.priority(j);
-          s = j;
+      const v_item = this.get_v_item(i);
+      v_item.status = vertex_status.UNDISCOVERED;
+      v_item.d_time = -1;
+      v_item.f_time = -1;
+      v_item.parent = -1;
+      v_item.priority = Math.Infinity;
+      for (let j = 0; j < this.n; j++) {
+        if (this.exists(i, j)) {
+          const e_item = this.get_e_item(i, j);
+          e_item.type = edge_type.UNDETERMINED;
         }
       }
     }
@@ -209,9 +58,13 @@ export default class graph {
    * 顶点v的状态
    * @param {*} i
    */
-  get_v_item(i) {
-    
-  }
+  get_v_item(i) {}
+  /**
+   * 获取i和j的边
+   * @param {*} i
+   * @param {*} j
+   */
+  get_e_item(i, j) {}
   status(i) {}
   /**
    *顶点v的时间标签dTime
@@ -252,13 +105,7 @@ export default class graph {
    * @param {*} v
    * @param {*} u
    */
-  remove(v, u) { }
-  /**
-   * 获取i和j的边
-   * @param {*} i 
-   * @param {*} j 
-   */
-  get_e_item(i,j){}
+  remove(v, u) {}
   /**
    * 边(v, u)的类型
    * @param {*} i
@@ -277,58 +124,222 @@ export default class graph {
    */
   weight(v, u) {}
   /**
+   * （连通域）广度优先搜索算法（全图）
+   */
+  bfs(s) {
+    this.reset();
+    let clock = 0;
+    let v = s;
+    //逐一检查所有顶点
+    while (true) {
+      //一旦遇到尚未发现的顶点
+      if (vertex_status.UNDISCOVERED === this.status(v)) {
+        //即从该顶点出发启动一次BFS
+        this.BFS(v, clock);
+      }
+      //按序号检查，先自增然后取余。
+      v = ++v % this.n;
+      if (s === v) {
+        break;
+      }
+    }
+  }
+  /**
+   * （连通域）深度优先搜索算法（全图）
+   */
+  dfs(s) {
+    this.reset();
+    let clock = 0;
+    let v = s;
+    while (true) {
+      if (vertex_status.UNDISCOVERED === this.status(v)) {
+        this.DFS(v, clock);
+      }
+      v = ++v % this.n;
+      if (s === v) {
+        break;
+      }
+    }
+  }
+  /**
+   *（连通域）基于DFS的双连通分量分解算法
+   * DFS树中的叶节点， 绝不可能是原图中的关节点此类顶点的删除既不致影响DFS树的连通性
+   * DFS树的根节点若至少拥有两个分支，则必是一个关节点。反之，若根节点仅有一个分支，则与叶节点同理，它也不可能是关节点
+   * 关键的问题是如何甄别一般的内部节点是否为关节点呢
+   * 若节点C的移除导致其某一棵（比如以D为根的）真子树与其真祖先（比如A）之间无法连通， 则C必为关节点
+   * 当然，在原无向图的DFS树中， C的真子树只可能通过后向边与C的真祖先连通
+   * 因此，只要在DFS搜索过程记录并更新各顶点v所能（经由后向边）连通的最高祖先（highest connected ancestor, HCA） hca[v]，即可及时认定关节点，并报告对应的双连通域
+   */
+  bcc(s) {
+    this.reset();
+    let clock = 0;
+    let v = s;
+    const S = []; //用于记录已访问的顶点
+    while (true) {
+      if (vertex_status.UNDISCOVERED === this.status(v)) {
+        this.BCC(v, clock, S);
+        S.pop(); //遍历返回后，弹出栈中的最后一个顶点，当前连通域的起点
+      }
+      v = ++v % n;
+      if (s === v) {
+        break;
+      }
+    }
+  }
+  /**
+   *（连通域）基于DFS的拓扑排序算法
+   */
+  t_sort(s) {
+    this.reset();
+    let clock = 0;
+    let v = s;
+    const S = []; //用栈记录排序顶点
+    while (true) {
+      if (vertex_status.UNDISCOVERED === this.status(v)) {
+        if (!this.TSort(v, clock, S)) {
+          //任一连通域（亦即整图）非DAG
+          while (S.length !== 0) {
+            S.pop();
+          }
+          break;
+        }
+      }
+      v = ++v % n;
+      if (s === v) {
+        break;
+      }
+    }
+    return S;
+  }
+  /**
+   * 约定优先级数越大（小）顶点的优先级越低（高）。
+   * 相应地，在算法的初始化阶段（如reset()）通常都将顶点的优先级数统一置为最大，优先级最低。
+   *（连通域）优先级搜索框架(全图)
+   */
+  pfs(s, priority_updater) {
+    this.reset();
+    let v = s;
+    while (true) {
+      if (vertex_status.UNDISCOVERED === this.status(v)) {
+        this.PFS(v, priority_updater);
+      }
+      v = ++v % n;
+      if (s === v) {
+        break;
+      }
+    }
+  }
+  /**
+   * 最小支撑树Prim算法
+   */
+  prim(s) {
+    this.reset();
+    const s_v_item = this.get_v_item(s);
+    s_v_item.priority = 0;
+    // 共需引入n个顶点和n-1条边
+    for (let i = 0; i < this.n; i++) {
+      s_v_item.status = vertex_status.VISITED;
+      if (-1 !== this.parent(s)) {
+        const s_parent_e_item = this.get_e_item(this.parent(s), s);
+        s_parent_e_item.type = edge_type.TREE; //引入当前的s
+      }
+      for (let j = this.first_nbr(s); -1 < j; j = this.next_nbr(s, j)) {
+        //对邻接节点j做松弛
+        if (this.status(j) === vertex_status.UNDISCOVERED && this.priority(j) > this.weight(s, j)) {
+          const j_v_item = this.get_v_item(j);
+          j_v_item.priority = this.weight(s, j);
+          j_v_item.paren = s;
+        }
+      }
+      for (let shortest = Math.Infinity, j = 0; j < this.n; j++) {
+        if (this.status(j) === vertex_status.UNDISCOVERED && shortest > this.priority(j)) {
+          shortest = this.priority(j);
+          s = j;
+        }
+      }
+    }
+  }
+  /**
+   * 最短路径Dijkstra算法,适用于一般的有向图
+   */
+  dijkstra() {
+    this.reset();
+    const s_v_item = this.get_v_item(s);
+    s_v_item.priority = 0;
+    for (let i = 0; i < this.n; i++) {
+      s_v_item.status = vertex_status.VISITED;
+      if (-1 !== this.parent(s)) {
+        const s_parent_e_item = this.get_e_item(this.parent(s), s);
+        s_parent_e_item.type = edge_type.TREE;
+      }
+      for (let j = this.first_nbr(s); -1 < j; j = this.next_nbr(s, j)) {
+        if (this.status(j) === vertex_status.UNDISCOVERED && this.priority(j) > this.priority(s) + this.weight(s, j)) {
+          const j_v_item = this.find_v_item(j);
+          j_v_item.priority = this.priority(s) + this.weight(s, j);
+          j_v_item.parent = s;
+        }
+      }
+      for (let shortest = Math.Infinity, j = 0; j < this.n; j++) {
+        if (this.status(j) === vertex_status.UNDISCOVERED && shortest > this.priority(j)) {
+          shortest = this.priority(j);
+          s = j;
+        }
+      }
+    }
+  }
+  /**
    * 广度优先搜索BFS算法（单个连通域），仿照树的层次遍历
    * 遍历结束后，所有访问过的顶点通过parent指针依次联接，从整体上给出了原图某一连通或可达域的一棵遍历树，称作广度优先搜索树
-   * @param {*} v 
-   * @param {*} clock 
+   * @param {*} v
+   * @param {*} clock
    */
   BFS(v, clock) {
-    const Q = [];//引入辅助队列
-    const v_item = this.get_v_item(v)
-    v_item.status = vertex_status.DISCOVERED;// 节点被发现
+    const Q = []; //引入辅助队列
+    const v_item = this.get_v_item(v);
+    v_item.status = vertex_status.DISCOVERED; // 节点被发现
     Q.push(v);
     while (Q.length !== 0) {
       let v = Q.unshift(); // 取出队首顶点v
-      const v_item = this.get_v_item(v)
+      const v_item = this.get_v_item(v);
       v_item.d_time = ++clock;
       //枚举v的所有邻居u
-      for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)){
+      for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)) {
         // 若u尚未被发现
         if (vertex_status.UNDISCOVERED === this.status(u)) {
-          const u_v_item = this.get_v_item(u)
-          u_v_item.status = vertex_status.DISCOVERED;//则u被发现
+          const u_v_item = this.get_v_item(u);
+          u_v_item.status = vertex_status.DISCOVERED; //则u被发现
           Q.push(u);
-          const v_u_e_item = this.get_e_item(v,u)
+          const v_u_e_item = this.get_e_item(v, u);
           v_u_e_item.type = edge_type.TREE; // 每次发现这样的一个顶点u，都意味着遍历树可从v到u扩展一条边
           u_v_item.parent = v; // 引入树边扩展支撑树。按照遍历树中的承袭关系，将v记作为u的父节点。
         } else {
           // 若顶点u已处于DISCOVERED状态（无向图），或者甚至处于VISITED状态（有向图） ，则意味着边(v, u)不属于遍历树，于是将该边归类为跨边（cross edge）
-          const v_u_e_item = this.get_e_item(v,u)
-          v_u_e_item.type = edge_type.CROSS
+          const v_u_e_item = this.get_e_item(v, u);
+          v_u_e_item.type = edge_type.CROSS;
         }
       }
       // 至此，当前节点访问完毕
-      v_item.status = vertex_status.VISITED
+      v_item.status = vertex_status.VISITED;
     }
   }
   /**
    * 深度优先搜索DFS算法（单个连通域）
-   * @param {*} v 
-   * @param {*} clock 
+   * @param {*} v
+   * @param {*} clock
    */
   DFS(v, clock) {
-    const v_item = this.get_v_item(v)
+    const v_item = this.get_v_item(v);
     v_item.d_time = ++clock;
     v_item.status = vertex_status.DISCOVERED;
     // 枚举v的所有邻居
-    for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)){
-      const v_u_e_item = this.get_e_item(v, u)
-      const u_item = this.get_v_item(u)
-      const v_item = this.get_v_item(v)
+    for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)) {
+      const v_u_e_item = this.get_e_item(v, u);
+      const u_item = this.get_v_item(u);
+      const v_item = this.get_v_item(v);
       switch (this.status(u)) {
         //u尚未发现，意味着支撑树可以在此扩展
         case vertex_status.UNDISCOVERED:
-          v_u_e_item.type = edge_type.TREE
+          v_u_e_item.type = edge_type.TREE;
           u_item.parent = v;
           this.DFS(u, clock);
           break;
@@ -339,7 +350,7 @@ export default class graph {
         //u已访问完毕(VISITED，有向图)，则视承袭关系分为前向边或跨边
         default:
           // 用于判定DFS树中v是否u的祖先
-          v_u_e_item.type= v_item.d_time < u_item.d_time ? edge_type.FORWARD : edge_type.CROSS;
+          v_u_e_item.type = v_item.d_time < u_item.d_time ? edge_type.FORWARD : edge_type.CROSS;
           break;
       }
     }
@@ -352,18 +363,18 @@ export default class graph {
   }
   /**
    * 基于DFS的拓扑排序算法(单趟)
-   * @param {*} v 
-   * @param {*} clock 
-   * @param {*} S 
+   * @param {*} v
+   * @param {*} clock
+   * @param {*} S
    */
   TSort(v, clock, S) {
-    const v_item = this.get_v_item(v)
+    const v_item = this.get_v_item(v);
     v_item.d_time = ++clock;
     v_item.status = vertex_status.DISCOVERED;
-    for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)){
+    for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)) {
       const u_item = this.get_v_item(u);
-      const v_u_e_item = this.get_e_item(v, u)
-      const v_item = this.get_v_item(v)
+      const v_u_e_item = this.get_e_item(v, u);
+      const v_item = this.get_v_item(v);
       switch (this.status(u)) {
         case vertex_status.UNDISCOVERED:
           u_item.parent = v;
@@ -388,124 +399,136 @@ export default class graph {
   }
   /**
    * 拓扑排序（单个）
-   * @param {*} v 
-   * @param {*} clock 
-   * @param {*} S 
+   * @param {*} v
+   * @param {*} clock
+   * @param {*} S
    */
-  BCC(v,clock,S) {
-    this.d_time(v) = this.f_time(v) = ++clock;
-    this.status(v) = vertex_status.DISCOVERED;
+  BCC(v, clock, S) {
+    const v_item = this.get_v_item(v);
+    v_item.d_time = ++clock;
+    v_item.f_time = v_item.d_time;
+    v_item.status = vertex_status.DISCOVERED;
     S.push(v);
-    for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)){
+    for (let u = this.first_nbr(v); -1 < u; u = this.next_nbr(v, u)) {
+      const u_v_item = this.get_v_item(u);
+      const v_u_e_item = this.get_e_item(v, u);
       switch (this.status(u)) {
         case vertex_status.UNDISCOVERED:
-          this.parent(u) = v;
-          this.type(v, u) = edge_type.TREE;
-          BCC(u, clock, S);//从顶点u处深入 
-          if (this.f_time(u) < this.d_time(v)) { //遍历返回后，若发现u（通过后向边）可指向v的真祖先
-            this.f_time(v) = Math.min(this.f_time(v),this.f_time(u)) //则v亦必如此
-          } else {//否则，以v为关节点（u以下即是一个BCC，且其中顶点此时正集中于栈S的顶部）
-            const temp = []
-            while (true) {
-              temp.push(S.pop());
-              if (u === temp[temp.length - 1]) {
-                break;
-              }
-            }
-            while (temp.length !== 0) {
-              S.push(temp.pop());
-            }
-            while (u !== S.pop()) {
-              
-            }
+          u_v_item.parent = v;
+          v_u_e_item.type = edge_type.TREE;
+          this.BCC(u, clock, S); //从顶点u处深入
+          if (this.f_time(u) < this.d_time(v)) {
+            //遍历返回后，若发现u（通过后向边）可指向v的真祖先
+            v_item.f_time = Math.min(this.f_time(v), this.f_time(u)); //则v亦必如此
+          } else {
+            //否则，以v为关节点（u以下即是一个BCC，且其中顶点此时正集中于栈S的顶部）
+            while (v !== S.pop()); //依次弹出弼前BCC中癿节点，亦可根据实际需求转存至其它结极
+            S.push(v); //最后一个顶点（兲节点）重新入栈——分摊丌足一次
           }
+          break;
+        case vertex_status.DISCOVERED:
+          v_u_e_item.type = edge_type.BACKWARD;
+          if (u !== this.parent(v)) {
+            v_item.f_time = Math.min(this.f_time(v), this.d_time(u));
+          }
+          break;
+        default:
+          v_u_e_item.type = this.d_time(v) < this.d_time(u) ? edge_type.FORWARD : edge_type.CROSS;
+          break;
       }
     }
-    this.status(v) = vertex_status.VISITED
+    v_item.status = vertex_status.VISITED;
   }
   /**
    * 优先级搜索，单个连通域
-   * @param {*} s 
-   * @param {*} prioUpdater 
+   * @param {*} s
+   * @param {*} prioUpdater
    */
-  PFS(s, prioUpdater) {
-    this.priority(s) = 0;
-    this.status(s) = vertex_status.VISITED;
-    this.parent(s) = -1; //初始化，起点s加至PFS树中
+  PFS(s, priority_updater) {
+    const s_v_item = this.get_v_item(s);
+    s_v_item.priority = 0;
+    s_v_item.status = vertex_status.VISITED;
+    s_v_item.parent = -1; //初始化，起点s加至PFS树中
     while (true) {
-      for (let w = this.first_nbr(s); -1 < w; w = this.next_nbr(s, w)){
-        prioUpdater(this,s,w) //更新顶点w的优先级及其父顶点
+      for (let w = this.first_nbr(s); -1 < w; w = this.next_nbr(s, w)) {
+        priority_updater(this, s, w); //更新顶点w的优先级及其父顶点
       }
-      for (let shortest = Math.Infinity, w = 0; w < this.n; w++){
+      for (let shortest = Math.Infinity, w = 0; w < this.n; w++) {
         //从尚未加入遍历树的顶点中,选出下一个
         if (vertex_status.UNDISCOVERED === this.status(w)) {
           if (shortest > this.priority(w)) {
             shortest = this.priority(w);
             s = w;
-          }//优先级最高的顶点s
+          } //优先级最高的顶点s
         }
       }
+      //直至所有顶点均已加入
       if (vertex_status.VISITED === this.status(s)) {
         break;
       }
-      this.status(s) = vertex_status.VISITED;
-      this.type(this.parent(s), s) = edge_type.TREE;//将s及与其父的联边加入遍历树
+      const s_parent_e_item = this.get_e_item(this.parent(s), s);
+      s_v_item.status = vertex_status.VISITED;
+      s_parent_e_item.type = edge_type.TREE; //将s及与其父的联边加入遍历树
     }
   }
   /**
    * 针对Prim算法的顶点优先级更新器
-   * @param {*} g 
-   * @param {*} uk 
-   * @param {*} v 
+   * @param {*} g
+   * @param {*} uk
+   * @param {*} v
    */
-  static prim_prio_updater(g,uk,v) {
+  prim_priority_updater(g, uk, v) {
     if (vertex_status.UNDISCOVERED === g.status(v)) {
       // 按Prim策略左松弛
       if (g.priority(v) > b.weight(uk, v)) {
-        g.priority = g.weight(uk, v);
-        g.parent(v) = uk; //
+        const g_v_item = g.get_v_item(v);
+        g_v_item.priority = g.weight(uk, v);
+        g_v_item.parent = uk;
       }
     }
   }
   /**
    * 针对Dijkstra算法的顶点优先级更新器
-   * @param {*} g 
-   * @param {*} uk 
-   * @param {*} v 
+   * @param {*} g
+   * @param {*} uk
+   * @param {*} v
    */
-  static dijkstra_prio_updater(g, uk, v) {
+  dijkstra_priority_updater(g, uk, v) {
     if (vertex_status.UNDISCOVERED === g.status(v)) {
       if (g.priority(v) > g.priority(uk) + g.weight(uk, v)) {
-        g.priority(v) = g.priority(uk) + g.weight(uk, v);
-        g.parent(v) = uk;
+        const g_v_item = g.get_v_item(v);
+        g_v_item.priority = g.priority(uk) + g.weight(uk, v);
+        g_v_item.parent = uk;
       }
     }
   }
   /**
    * 针对BFS算法的顶点优先级更新器
-   * @param {*} g 
-   * @param {*} uk 
-   * @param {*} v 
+   * @param {*} g
+   * @param {*} uk
+   * @param {*} v
    */
-  static bfs_prio_updater(g, uk, v) {
+  bfs_priority_updater(g, uk, v) {
     if (g.status(v) === vertex_status.UNDISCOVERED) {
       if (g.priority(v) > g.priority(uk) + 1) {
-        g.priority(v) = g.priority(uk) + 1;
-        g.parent(v) = uk;
+        const g_v_item = g.get_v_item(v);
+        g_v_item.priority = g.priority(uk) + 1;
+        g_v_item.parent = uk;
       }
     }
   }
   /**
    * 针对DFS算法的顶点优先级更新器
-   * @param {*} g 
-   * @param {*} uk 
-   * @param {*} v 
+   * @param {*} g
+   * @param {*} uk
+   * @param {*} v
    */
-  static dfs_prio_updater(g, uk, v) {
+  dfs_priority_updater(g, uk, v) {
     if (g.status(v) === vertex_status.UNDISCOVERED) {
       if (g.priority(v) > g.priority(uk) - 1) {
-        g.priority(v) = g.priority(uk) - 1;
-        g.parent(v) = uk;
+        const v_g_item = g.get_v_item(v);
+        v_g_item.priority = g.priority(uk) - 1;
+        v_g_item.parent = uk;
         return;
       }
     }

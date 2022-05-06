@@ -38,4 +38,12 @@ const random_graph = (g, n, e) => {
 };
 const g = new graph_matrix();
 random_graph(g, 13, 29);
-console.log(g);
+// g.bfs(0);
+// g.dfs(0);
+// g.bcc(0);
+// g.t_sort(0);
+g.pfs(0, (a, b, c) => console.log(b, c));
+// const traverse_v = (item) => {
+//   console.log(item.f_time);
+// };
+// g.V.traverse(traverse_v);

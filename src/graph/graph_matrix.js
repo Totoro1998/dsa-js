@@ -1,38 +1,7 @@
 import vector from '../vector/vector.js';
 import graph from './graph.js';
-import { vertex_status, edge_type } from './const.js';
+import { vertex, edge } from './const.js';
 // 顶点对象
-class vertex {
-  data; //数据
-  in_degree; //入度
-  out_degree; //出度
-  status; //状态
-  d_time; //时间标签，顶点被发现的时刻
-  f_time; //时间标签，顶点被访问完毕的时刻
-  parent; //在遍历树中的父节点
-  priority; //优先级数
-  constructor(data) {
-    this.data = data;
-    this.in_degree = 0;
-    this.out_degree = 0;
-    this.status = vertex_status.UNDISCOVERED;
-    this.d_time = -1;
-    this.f_time = -1;
-    this.parent = -1;
-    this.priority = Number.MAX_SAFE_INTEGER;
-  }
-}
-//边对象
-class edge {
-  data; //数据
-  weight; //权重
-  type; //类型
-  constructor(data, weight) {
-    this.data = data;
-    this.weight = weight;
-    this.type = edge_type.UNDETERMINED;
-  }
-}
 /**
  * 基于向量，以邻接矩阵形式实现的图结
  */

@@ -12,7 +12,7 @@ export default class graph {
       v_item.d_time = -1;
       v_item.f_time = -1;
       v_item.parent = -1;
-      v_item.priority = Math.Infinity;
+      v_item.priority = Number.MAX_SAFE_INTEGER;
       for (let j = 0; j < this.n; j++) {
         if (this.exists(i, j)) {
           const e_item = this.get_e_item(i, j);
@@ -251,7 +251,7 @@ export default class graph {
           j_v_item.paren = s;
         }
       }
-      for (let shortest = Math.Infinity, j = 0; j < this.n; j++) {
+      for (let shortest = Number.MAX_SAFE_INTEGER, j = 0; j < this.n; j++) {
         if (this.status(j) === vertex_status.UNDISCOVERED && shortest > this.priority(j)) {
           shortest = this.priority(j);
           s = j;
@@ -279,7 +279,7 @@ export default class graph {
           j_v_item.parent = s;
         }
       }
-      for (let shortest = Math.Infinity, j = 0; j < this.n; j++) {
+      for (let shortest = Number.MAX_SAFE_INTEGER, j = 0; j < this.n; j++) {
         if (this.status(j) === vertex_status.UNDISCOVERED && shortest > this.priority(j)) {
           shortest = this.priority(j);
           s = j;
@@ -452,7 +452,7 @@ export default class graph {
       for (let w = this.first_nbr(s); -1 < w; w = this.next_nbr(s, w)) {
         priority_updater(this, s, w); //更新顶点w的优先级及其父顶点
       }
-      for (let shortest = Math.Infinity, w = 0; w < this.n; w++) {
+      for (let shortest = Number.MAX_SAFE_INTEGER, w = 0; w < this.n; w++) {
         //从尚未加入遍历树的顶点中,选出下一个
         if (vertex_status.UNDISCOVERED === this.status(w)) {
           if (shortest > this.priority(w)) {

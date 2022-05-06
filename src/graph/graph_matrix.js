@@ -19,7 +19,7 @@ class vertex {
     this.d_time = -1;
     this.f_time = -1;
     this.parent = -1;
-    this.priority = Math.Infinity;
+    this.priority = Number.MAX_SAFE_INTEGER;
   }
 }
 //边对象
@@ -49,28 +49,28 @@ export class graph_matrix extends graph {
    * @param {*} i
    */
   get_v_item(i) {
-    return this.V[i];
+    return this.V.get_item(i);
   }
   /**
    * 查询第i个顶点的数据
    * @param {*} i
    */
   vertex(i) {
-    return this.V[i].data;
+    return this.V.get_item(i).data;
   }
   /**
    * 查询第i个顶点的入度
    * @param {*} i
    */
   in_degree(i) {
-    return this.V[i].in_degree;
+    return this.V.get_item(i).in_degree;
   }
   /**
    * 查询第i个顶点的出度
    * @param {*} i
    */
   out_degree(i) {
-    return this.V[i].out_degree;
+    return this.V.get_item(i).out_degree;
   }
   /**
    * 首个邻接顶点
@@ -94,35 +94,35 @@ export class graph_matrix extends graph {
    * @param {*} i
    */
   status(i) {
-    return this.V[i].status;
+    return this.V.get_item(i).status;
   }
   /**
    *时间标签d_time
    * @param {*} i
    */
   d_time(i) {
-    return this.V[i].d_time;
+    return this.V.get_item(i).d_time;
   }
   /**
    * 时间变迁f_time
    * @param {*} i
    */
   f_time(i) {
-    return this.V[i].f_time;
+    return this.V.get_item(i).f_time;
   }
   /**
    * 在遍历树中的父亲
    * @param {*} i
    */
   parent(i) {
-    return this.V[i].parent;
+    return this.V.get_item(i).parent;
   }
   /**
    * 在遍历树中优先级数
    * @param {*} i
    */
   priority(i) {
-    return this.V[i].priority;
+    return this.V.get_item(i).priority;
   }
   /**
    * 顶点的动态操作
@@ -131,7 +131,7 @@ export class graph_matrix extends graph {
    */
   insert_vertex(v) {
     for (let j = 0; j < this.n; j++) {
-      this.E[j].insert(null); //各顶点预留一条潜在的关联边
+      this.E.get_item(j).insert(null); //各顶点预留一条潜在的关联边
     }
     this.n++;
     const vec = new vector();
@@ -146,8 +146,9 @@ export class graph_matrix extends graph {
   remove_vertex(i) {
     for (let j = 0; j < this.n; j++) {
       if (this.exists(i, j)) {
-        this.E[i][j] = null;
-        this.V[j].in_degree--;
+        const j_elem = this.E.get_item(i).get_elem();
+        j_elem[j] = null;
+        this.V.get_item(j).in_degree--;
         this.e--;
       }
     }
@@ -156,10 +157,10 @@ export class graph_matrix extends graph {
     let v_bak_data = this.vertex(i);
     this.V.remove_by_index(i); //删除顶点i
     for (let j = 0; j < this.n; j++) {
-      let e = this.E[j].remove_by_index(i); //删除列
+      let e = this.E.get_item(j).remove_by_index(i); //删除列
       if (e) {
         e = null;
-        this.V[j].out_degree--;
+        this.V.get_item(j).out_degree--;
         this.e--;
       }
     }
@@ -171,7 +172,7 @@ export class graph_matrix extends graph {
    * @param {*} j
    */
   exists(i, j) {
-    return 0 <= i && i < this.n && 0 <= j && j < this.n && this.E[i][j];
+    return 0 <= i && i < this.n && 0 <= j && j < this.n && this.E.get_item(i).get_item(j);
   }
   /**
    * 获取i和j的边
@@ -179,7 +180,7 @@ export class graph_matrix extends graph {
    * @param {*} j
    */
   get_e_item(i, j) {
-    return this.E[i][j];
+    return this.E.get_item(i).get_item(j);
   }
   /**
    * 边(i,j)的类型
@@ -187,7 +188,7 @@ export class graph_matrix extends graph {
    * @param {*} j
    */
   type(i, j) {
-    return this.E[i][j].type;
+    return this.E.get_item(i).get_item(j).type;
   }
   /**
    * 边(i,j)的数据
@@ -195,7 +196,7 @@ export class graph_matrix extends graph {
    * @param {*} j
    */
   edge(i, j) {
-    return this.E[i][j].data;
+    return this.E.get_item(i).get_item(j).data;
   }
   /**
    * 边(i,j)的权重
@@ -203,7 +204,7 @@ export class graph_matrix extends graph {
    * @param {*} j
    */
   weight(i, j) {
-    return this.E[i][j].weight;
+    return this.E.get_item(i).get_item(j).weight;
   }
   /**
    * 边的动态操作，插入权重为w的边e=(i,j)
@@ -216,10 +217,11 @@ export class graph_matrix extends graph {
     if (this.exists(i, j)) {
       return;
     }
-    this.E[i][j] = new edge(e, w);
+    const elem = this.E.get_item(i).get_elem();
+    elem[j] = new edge(e, w);
     this.e++;
-    this.V[i].out_degree++;
-    this.V[j].in_degree++;
+    this.V.get_item(i).out_degree++;
+    this.V.get_item(j).in_degree++;
   }
   /**
    * 删除顶点(i,j)的连边
@@ -228,10 +230,11 @@ export class graph_matrix extends graph {
    */
   remove_edge(i, j) {
     let e_bak_data = this.edge(i, j);
-    this.E[i][j] = null;
+    const elem = this.E.get_item(i).get_elem();
+    elem[j] = null;
     this.e--;
-    this.V[i].out_degree--;
-    this.V[j].in_degree--;
+    this.V.get_item(i).out_degree--;
+    this.V.get_item(j).in_degree--;
     return e_bak_data;
   }
 }

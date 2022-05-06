@@ -85,9 +85,8 @@ export class graph_matrix extends graph {
    * @param {*} j
    */
   next_nbr(i, j) {
-    while (-1 < j && !this.exists(i, --j)) {
-      return j;
-    }
+    while (-1 < j && !this.exists(i, --j));
+    return j;
   }
   /**
    * 状态
